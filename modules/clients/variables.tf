@@ -44,3 +44,10 @@ variable "extra_args" {
   default = []
   description = "Extra consul agent arguments to append to the main invocation"
 }
+
+variable "env" {
+  type = list(string)
+  default=[]
+  description = "Environment variables to set for the container"
+}
+

@@ -47,6 +47,6 @@ variable "extra_args" {
 
 variable "env" {
   type = list(string)
-  default=["CONSUL_BIND_INTERFACE=eth0", "CONSUL_ALLOW_PRIVILEGED_PORTS=yes"]
+  default=[]
   description = "Environment variables to set for the container"
 }

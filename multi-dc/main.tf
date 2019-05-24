@@ -50,7 +50,6 @@ module "primary_servers" {
    datacenter = "primary"
    default_networks = [docker_network.consul_primary_network.name, docker_network.consul_bridge_network.name]
    default_image = docker_image.consul.name
-   env = []
    extra_args=["-bind=0.0.0.0",
                "-advertise", "{{ GetInterfaceIP \"eth0\" }}",
                "-advertise-wan", "{{ GetInterfaceIP \"eth1\" }}",
@@ -96,7 +95,6 @@ module "secondary_servers" {
    datacenter = "secondary"
    default_networks = [docker_network.consul_secondary_network.name, docker_network.consul_bridge_network.name]
    default_image = docker_image.consul.name
-   env = []
    extra_args =concat(["-bind=0.0.0.0",
                        "-advertise", "{{ GetInterfaceIP \"eth0\" }}",
                        "-advertise-wan", "{{ GetInterfaceIP \"eth1\" }}",

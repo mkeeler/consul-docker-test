@@ -28,6 +28,7 @@ module "primary_servers" {
    datacenter = "primary"
    default_networks = [docker_network.consul_network.name]
    default_image = docker_image.consul.name
+   default_name_prefix="consul-simple-server-"
 
    # 3 servers all with defaults
    servers = [{},{},{}]
@@ -44,7 +45,7 @@ module "primary_clients" {
 
    clients = [
       {
-         "name" : "consul-primary-ui"
+         "name" : "consul-simple-ui"
          "extra_args": ["-ui"],
          "ports": {
             "http": {

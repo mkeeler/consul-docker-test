@@ -51,7 +51,7 @@ resource "docker_container" "client-containers" {
    hostname = local.client_hostnames[count.index]
    networks = local.client_networks[count.index]
    command = local.client_commands[count.index]
-   env=["CONSUL_BIND_INTERFACE=eth0", "CONSUL_ALLOW_PRIVILEGED_PORTS=yes"]
+   env=var.env
 
    dynamic "upload" {
       for_each = local.client_uploads[count.index]

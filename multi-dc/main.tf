@@ -38,8 +38,14 @@ resource "docker_network" "consul_bridge_network" {
    internal = false
 }
 
+variable "consul_image" {
+   type = string
+   default = "consul:latest"
+   description = "Name of the Consul container image to use"
+}
+
 resource "docker_image" "consul" {
-   name = "consul:latest"
+   name = var.consul_image
    keep_locally = true
 }
 
@@ -48,6 +54,9 @@ module "primary_servers" {
 
    persistent_data = true
    datacenter = "primary"
+   default_config = {
+      "agent-conf.hcl" = file("agent-conf.hcl")
+   }
    default_networks = [docker_network.consul_primary_network.name, docker_network.consul_bridge_network.name]
    default_image = docker_image.consul.name
    extra_args=["-bind=0.0.0.0",
@@ -64,6 +73,9 @@ module "primary_clients" {
 
    persistent_data = false
    datacenter = "primary"
+   default_config = {
+      "agent-conf.hcl" = file("agent-conf.hcl")
+   }
    default_networks = [docker_network.consul_primary_network.name]
    default_image = docker_image.consul.name
    extra_args = module.primary_servers.join
@@ -93,6 +105,9 @@ module "secondary_servers" {
 
    persistent_data = true
    datacenter = "secondary"
+   default_config = {
+      "agent-conf.hcl" = file("agent-conf.hcl")
+   }
    default_networks = [docker_network.consul_secondary_network.name, docker_network.consul_bridge_network.name]
    default_image = docker_image.consul.name
    extra_args =concat(["-bind=0.0.0.0",
@@ -111,6 +126,9 @@ module "secondary_clients" {
 
    persistent_data = false
    datacenter = "secondary"
+   default_config = {
+      "agent-conf.hcl" = file("agent-conf.hcl")
+   }
    default_networks = [docker_network.consul_secondary_network.name]
    default_image = docker_image.consul.name
    extra_args = module.secondary_servers.join

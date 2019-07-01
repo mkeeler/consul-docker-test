@@ -51,13 +51,20 @@ resource "docker_volume" "server-data" {
 
 resource "docker_container" "server-containers" {
    count = length(var.servers)
-   privileged = true
+   privileged = false
    image = local.server_images[count.index]
    name = local.server_names[count.index]
    hostname = local.server_hostnames[count.index]
-   networks = local.server_networks[count.index]
    command = local.server_commands[count.index]
    env=var.env
+
+   dynamic "networks_advanced" {
+      for_each = local.server_networks[count.index]
+
+      content {
+         name = networks_advanced.value
+      }
+   }
 
    dynamic "upload" {
       for_each = local.server_uploads[count.index]

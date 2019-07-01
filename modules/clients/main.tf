@@ -49,7 +49,13 @@ resource "docker_container" "client-containers" {
    image = local.client_images[count.index]
    name = local.client_names[count.index]
    hostname = local.client_hostnames[count.index]
-   networks = local.client_networks[count.index]
+   dynamic "networks_advanced" {
+      for_each = local.client_networks[count.index]
+
+      content {
+         name = networks_advanced.value
+      }
+   }
    command = local.client_commands[count.index]
    env=var.env
 

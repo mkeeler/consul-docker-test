@@ -1,0 +1,14 @@
+# config file version
+apiVersion: 1
+
+# list of datasources to insert/update depending
+# what's available in the database
+datasources:
+  # <string, required> name of the datasource. Required
+- name: Prometheus
+  type: prometheus
+  access: proxy
+  url: http://${prometheus_address}
+  isDefault: true
+  version: 1
+  editable: false

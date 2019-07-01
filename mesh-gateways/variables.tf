@@ -6,7 +6,7 @@ variable "consul_image" {
 
 variable "use_cluster_id" {
    type = bool
-   default = true
+   default = false
    description = "Whether docker resources are created with a 4 byte random id tacked on"
 }
 

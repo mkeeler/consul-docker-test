@@ -103,25 +103,6 @@ module "primary_clients" {
             }
          }
       },
-       {
-         "extra_args": ["-grpc-port=8502"],
-         "config": {
-            "agent-conf.hcl" = local.agent_conf
-            "tcpproxy.hcl" = file("${path.module}/consul-config/tcpproxy-primary.hcl")
-         },
-         "ports": {
-            "socat-external": {
-               "internal": 8181,
-               "external": 10001,
-               "protocol": "tcp"
-            },
-            "envoy-admin": {
-               "internal": 19000,
-               "external": 19002,
-               "protocol": "tcp"
-            },
-         }
-      },
    ]
 }
 

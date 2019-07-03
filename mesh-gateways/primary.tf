@@ -1,7 +1,6 @@
 module "primary_servers" {
    source = "../modules/servers"
 
-   wait_for_leader = true
    persistent_data = true
    datacenter = "primary"
    default_config = {
@@ -23,7 +22,6 @@ module "primary_clients" {
    source = "../modules/clients"
 
    persistent_data = true
-   wait_for_leader = true
    datacenter = "primary"
    default_config = {
       "agent-conf.hcl" = local.agent_conf
@@ -71,7 +69,7 @@ module "primary_clients" {
          "extra_args": ["-grpc-port=8502"],
          "config": {
             "agent-conf.hcl" = local.agent_conf
-            "socat-ext.hcl" = file("${path.module}/consul-config/socat-ext.hcl")
+            "tcpproxy.hcl" = file("${path.module}/consul-config/tcpproxy-primary-v1.hcl")
          },
          "ports": {
             "socat-external": {
@@ -104,7 +102,26 @@ module "primary_clients" {
                "protocol": "tcp"
             }
          }
-      }
+      },
+       {
+         "extra_args": ["-grpc-port=8502"],
+         "config": {
+            "agent-conf.hcl" = local.agent_conf
+            "tcpproxy.hcl" = file("${path.module}/consul-config/tcpproxy-primary-v2.hcl")
+         },
+         "ports": {
+            "socat-external": {
+               "internal": 8181,
+               "external": 10001,
+               "protocol": "tcp"
+            },
+            "envoy-admin": {
+               "internal": 19000,
+               "external": 19002,
+               "protocol": "tcp"
+            },
+         }
+      },
    ]
 }
 
@@ -122,6 +139,7 @@ module "primary-socat-proxy" {
    name = "primary-socatZ-proxy${local.cluster_id}"
    consul_manager = module.primary_clients.clients[1].name
    sidecar_for = "socat"
+   expose_admin = true
 }
 
 resource "docker_container" "primary-tcpproxy" {
@@ -138,6 +156,7 @@ module "primary-tcpproxy-proxy" {
    name = "primary-tcpproxy-proxy${local.cluster_id}"
    consul_manager = module.primary_clients.clients[2].name
    sidecar_for = "tcpproxy"
+   expose_admin = true
 }
 
 module "primary-gateway" {

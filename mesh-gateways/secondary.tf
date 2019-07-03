@@ -74,7 +74,7 @@ module "secondary_clients" {
          "extra_args": ["-grpc-port=8502", "-log-level", "DEBUG"],
          "config": {
             "agent-conf.hcl" = local.agent_conf
-            "socat-ext.hcl" = file("${path.module}/consul-config/socat-ext.hcl")
+            "socat-ext.hcl" = file("${path.module}/consul-config/tcpproxy-secondary.hcl")
          },
          "ports": {
             "socat-external": {
@@ -127,6 +127,7 @@ module "secondary-socat-proxy" {
    name = "secondary-socat-proxy${local.cluster_id}"
    consul_manager = module.secondary_clients.clients[1].name
    sidecar_for = "socat"
+   expose_admin = true
 }
 
 resource "docker_container" "secondary-tcpproxy" {
@@ -143,6 +144,7 @@ module "secondary-tcpproxy-proxy" {
    name = "secondary-tcpproxy-proxy${local.cluster_id}"
    consul_manager = module.secondary_clients.clients[2].name
    sidecar_for = "tcpproxy"
+   expose_admin = true
 }
 
 module "secondary-gateway" {

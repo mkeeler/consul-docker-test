@@ -13,6 +13,7 @@ locals {
    sidecar_args = var.sidecar_for != "" && !var.mesh_gateway ? ["-sidecar-for", var.sidecar_for] : []
    proxy_id_args = var.proxy_id != "" ? ["-proxy-id", var.proxy_id] : []
    central_config_args = var.no_central_config ? ["-no-central-config"] : []
+   log_level_args = ["--", "-l", var.log_level ]
 
    command = concat(
       ["/bin/consul", "connect", "envoy"],
@@ -21,7 +22,8 @@ locals {
       local.proxy_id_args,
       local.central_config_args,
       local.access_log_args,
-      local.admin_args
+      local.admin_args,
+      local.log_level_args,
    )
 
    ports = var.expose_admin && !var.container_network_inject ? [var.admin_host_port] : []

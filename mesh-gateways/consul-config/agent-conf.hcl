@@ -22,6 +22,23 @@ config_entries {
       MeshGateway {
         Mode = "local"
       }
-    }
+    },
+    {
+      Kind = "service-defaults"
+      Name = "api"
+      protocol = "http"
+    },
+    {
+      Kind = "service-defaults"
+      Name = "web"
+      protocol = "http"
+    },
+    // {
+    //   Kind = "service-resolver"
+    //   Name = "api"
+    //   Redirect {
+    //     Datacenter = "secondary"
+    //   }
+    // }
   ]
 }

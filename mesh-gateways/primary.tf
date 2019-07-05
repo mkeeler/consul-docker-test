@@ -33,7 +33,7 @@ module "primary_clients" {
 
    clients = [
       {
-         "name" : "consul-primary-ui${local.cluster_id}"
+         "name": "consul-primary-ui${local.cluster_id}"
          "extra_args": ["-ui"],
          "ports": {
             "http": {
@@ -55,7 +55,7 @@ module "primary_clients" {
          "extra_args": ["-grpc-port=8502"],
          "config": {
             "agent-conf.hcl" = local.agent_conf
-            "socat.hcl" = file("${path.module}/consul-config/socat.hcl")
+            "api-v1.hcl" = file("${path.module}/consul-config/api-v1.hcl")
          },
          "ports": {
             "envoy-admin": {
@@ -69,11 +69,11 @@ module "primary_clients" {
          "extra_args": ["-grpc-port=8502"],
          "config": {
             "agent-conf.hcl" = local.agent_conf
-            "tcpproxy.hcl" = file("${path.module}/consul-config/tcpproxy-primary.hcl")
+            "web.hcl" = file("${path.module}/consul-config/web.hcl")
          },
          "ports": {
-            "socat-external": {
-               "internal": 8181,
+            "web-external": {
+               "internal": 10000,
                "external": 10001,
                "protocol": "tcp"
             },
@@ -106,39 +106,39 @@ module "primary_clients" {
    ]
 }
 
-resource "docker_container" "primary-socat" {
-   image = "alpine/socat"
-   name = "primary-socat${local.cluster_id}"
-   network_mode = "container:${module.primary_clients.clients[1].name}"
-   command = ["-v", "tcp-l:8181,fork", "exec:\"/bin/cat\""]
-}
+// resource "docker_container" "primary-socat" {
+//    image = "alpine/socat"
+//    name = "primary-socat${local.cluster_id}"
+//    network_mode = "container:${module.primary_clients.clients[1].name}"
+//    command = ["-v", "tcp-l:8181,fork", "exec:\"/bin/cat\""]
+// }
 
-module "primary-socat-proxy" {
-   source = "../modules/consul-envoy"
+// module "primary-socat-proxy" {
+//    source = "../modules/consul-envoy"
 
-   consul_envoy_image = var.consul_envoy_image
-   name = "primary-socatZ-proxy${local.cluster_id}"
-   consul_manager = module.primary_clients.clients[1].name
-   sidecar_for = "socat"
-   expose_admin = true
-}
+//    consul_envoy_image = var.consul_envoy_image
+//    name = "primary-socatZ-proxy${local.cluster_id}"
+//    consul_manager = module.primary_clients.clients[1].name
+//    sidecar_for = "socat"
+//    expose_admin = true
+// }
 
-resource "docker_container" "primary-tcpproxy" {
-   image = "alpine/socat"
-   name = "primary-tcpproxy${local.cluster_id}"
-   network_mode = "container:${module.primary_clients.clients[2].name}"
-   command = ["-v", "tcp-l:8181,fork", "tcp-connect:127.0.0.1:10000"]
-}
+// resource "docker_container" "primary-tcpproxy" {
+//    image = "alpine/socat"
+//    name = "primary-tcpproxy${local.cluster_id}"
+//    network_mode = "container:${module.primary_clients.clients[2].name}"
+//    command = ["-v", "tcp-l:8181,fork", "tcp-connect:127.0.0.1:10000"]
+// }
 
-module "primary-tcpproxy-proxy" {
-   source = "../modules/consul-envoy"
+// module "primary-tcpproxy-proxy" {
+//    source = "../modules/consul-envoy"
 
-   consul_envoy_image = var.consul_envoy_image
-   name = "primary-tcpproxy-proxy${local.cluster_id}"
-   consul_manager = module.primary_clients.clients[2].name
-   sidecar_for = "tcpproxy"
-   expose_admin = true
-}
+//    consul_envoy_image = var.consul_envoy_image
+//    name = "primary-tcpproxy-proxy${local.cluster_id}"
+//    consul_manager = module.primary_clients.clients[2].name
+//    sidecar_for = "tcpproxy"
+//    expose_admin = true
+// }
 
 module "primary-gateway" {
    source = "../modules/consul-envoy"
@@ -149,5 +149,37 @@ module "primary-gateway" {
    container_network_inject = true
    mesh_gateway = true
    register = true
+   expose_admin = true
+}
+
+resource "docker_container" "primary-api" {
+   image = "nginxdemos/hello"
+   name = "primary-api${local.cluster_id}"
+   network_mode = "container:${module.primary_clients.clients[1].name}"
+   command = []
+}
+module "primary-api-proxy" {
+   source = "../modules/consul-envoy"
+
+   consul_envoy_image = var.consul_envoy_image
+   name = "primary-api-proxy${local.cluster_id}"
+   consul_manager = module.primary_clients.clients[1].name
+   sidecar_for = "api"
+   expose_admin = true
+}
+
+resource "docker_container" "primary-web" {
+   image = "nginxdemos/hello"
+   name = "primary-web${local.cluster_id}"
+   network_mode = "container:${module.primary_clients.clients[2].name}"
+   command = []
+}
+module "primary-web-proxy" {
+   source = "../modules/consul-envoy"
+
+   consul_envoy_image = var.consul_envoy_image
+   name = "primary-web-proxy${local.cluster_id}"
+   consul_manager = module.primary_clients.clients[2].name
+   sidecar_for = "web"
    expose_admin = true
 }

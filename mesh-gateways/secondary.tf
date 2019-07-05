@@ -60,7 +60,7 @@ module "secondary_clients" {
          "extra_args": ["-grpc-port=8502"],
          "config": {
             "agent-conf.hcl" = local.agent_conf
-            "socat.hcl" = file("${path.module}/consul-config/socat.hcl")
+            "api-v2.hcl" = file("${path.module}/consul-config/api-v2.hcl")
          }
          "ports": {
             "envoy-admin": {
@@ -74,11 +74,11 @@ module "secondary_clients" {
          "extra_args": ["-grpc-port=8502", "-log-level", "DEBUG"],
          "config": {
             "agent-conf.hcl" = local.agent_conf
-            "socat-ext.hcl" = file("${path.module}/consul-config/tcpproxy-secondary.hcl")
+            "web.hcl" = file("${path.module}/consul-config/web.hcl")
          },
          "ports": {
-            "socat-external": {
-               "internal": 8181,
+            "web-external": {
+               "internal": 10000,
                "external": 10002,
                "protocol": "tcp"
             },
@@ -113,48 +113,79 @@ module "secondary_clients" {
    ]
 }
 
-resource "docker_container" "secondary-socat" {
-   image = "alpine/socat"
-   name = "secondary-socat${local.cluster_id}"
-   network_mode = "container:${module.secondary_clients.clients[1].name}"
-   command = ["-v", "tcp-l:8181,fork", "exec:\"/bin/cat\""]
-}
+// resource "docker_container" "secondary-socat" {
+//    image = "alpine/socat"
+//    name = "secondary-socat${local.cluster_id}"
+//    network_mode = "container:${module.secondary_clients.clients[1].name}"
+//    command = ["-v", "tcp-l:8181,fork", "exec:\"/bin/cat\""]
+// }
 
-module "secondary-socat-proxy" {
-   source = "../modules/consul-envoy"
+// module "secondary-socat-proxy" {
+//    source = "../modules/consul-envoy"
 
-   consul_envoy_image = var.consul_envoy_image
-   name = "secondary-socat-proxy${local.cluster_id}"
-   consul_manager = module.secondary_clients.clients[1].name
-   sidecar_for = "socat"
-   expose_admin = true
-}
+//    consul_envoy_image = var.consul_envoy_image
+//    name = "secondary-socat-proxy${local.cluster_id}"
+//    consul_manager = module.secondary_clients.clients[1].name
+//    sidecar_for = "socat"
+//    expose_admin = true
+// }
 
-resource "docker_container" "secondary-tcpproxy" {
-   image = "alpine/socat"
-   name = "secondary-tcpproxy${local.cluster_id}"
-   network_mode = "container:${module.secondary_clients.clients[2].name}"
-   command = ["-v", "tcp-l:8181,fork", "tcp-connect:127.0.0.1:10000"]
-}
+// resource "docker_container" "secondary-tcpproxy" {
+//    image = "alpine/socat"
+//    name = "secondary-tcpproxy${local.cluster_id}"
+//    network_mode = "container:${module.secondary_clients.clients[2].name}"
+//    command = ["-v", "tcp-l:8181,fork", "tcp-connect:127.0.0.1:10000"]
+// }
 
-module "secondary-tcpproxy-proxy" {
-   source = "../modules/consul-envoy"
+// module "secondary-tcpproxy-proxy" {
+//    source = "../modules/consul-envoy"
 
-   consul_envoy_image = var.consul_envoy_image
-   name = "secondary-tcpproxy-proxy${local.cluster_id}"
-   consul_manager = module.secondary_clients.clients[2].name
-   sidecar_for = "tcpproxy"
-   expose_admin = true
-}
+//    consul_envoy_image = var.consul_envoy_image
+//    name = "secondary-tcpproxy-proxy${local.cluster_id}"
+//    consul_manager = module.secondary_clients.clients[2].name
+//    sidecar_for = "tcpproxy"
+//    expose_admin = true
+// }
 
 module "secondary-gateway" {
    source = "../modules/consul-envoy"
-
    consul_envoy_image = var.consul_envoy_image
    name = "secondary-gateway${local.cluster_id}"
    consul_manager = module.secondary_clients.clients[3].name
    container_network_inject = true
    mesh_gateway = true
    register = true
+   expose_admin = true
+}
+
+resource "docker_container" "secondary-api" {
+   image = "nginxdemos/hello"
+   name = "secondary-api${local.cluster_id}"
+   network_mode = "container:${module.secondary_clients.clients[1].name}"
+   command = []
+}
+module "secondary-api-proxy" {
+   source = "../modules/consul-envoy"
+
+   consul_envoy_image = var.consul_envoy_image
+   name = "secondary-api-proxy${local.cluster_id}"
+   consul_manager = module.secondary_clients.clients[1].name
+   sidecar_for = "api"
+   expose_admin = true
+}
+
+resource "docker_container" "secondary-web" {
+   image = "nginxdemos/hello"
+   name = "secondary-web${local.cluster_id}"
+   network_mode = "container:${module.secondary_clients.clients[2].name}"
+   command = []
+}
+module "secondary-web-proxy" {
+   source = "../modules/consul-envoy"
+
+   consul_envoy_image = var.consul_envoy_image
+   name = "secondary-web-proxy${local.cluster_id}"
+   consul_manager = module.secondary_clients.clients[2].name
+   sidecar_for = "web"
    expose_admin = true
 }

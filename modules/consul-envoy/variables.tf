@@ -103,4 +103,10 @@ variable "wan_address" {
   description = "The IP address to register as the mesh-gateway services WAN address. Can be a go-sockaddr template"
 }
 
+variable "log_level" {
+  type = string
+  default = "debug"
+  description = "The log level for Envoy info,debug,trace etc."
+}
+
 

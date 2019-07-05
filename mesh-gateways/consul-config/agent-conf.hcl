@@ -33,12 +33,26 @@ config_entries {
       Name = "web"
       protocol = "http"
     },
+    {
+      Kind = "service-resolver"
+      Name = "api"
+      Redirect {
+        Datacenter = "secondary"
+      }
+    }
     // {
-    //   Kind = "service-resolver"
+    //   Kind = "service-splitter"
     //   Name = "api"
-    //   Redirect {
-    //     Datacenter = "secondary"
-    //   }
-    // }
+    //   Splits = [
+    //     {
+    //       Weight = 90
+    //       ServiceSubset = "v1"
+    //     },
+    //     {
+    //       Weight = 10
+    //       ServiceSubset = "v2"
+    //     },
+    //   ]
+    // },
   ]
 }

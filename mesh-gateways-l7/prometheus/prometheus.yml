@@ -1,0 +1,116 @@
+scrape_configs:
+- job_name: consul-primary-servers
+  scrape_interval: 15s
+  metrics_path: "/v1/agent/metrics"
+  params:
+    format: ['prometheus']
+  static_configs:
+  - targets:
+    - consul-server${cluster_id}-primary-0:8500
+    - consul-server${cluster_id}-primary-1:8500
+    - consul-server${cluster_id}-primary-2:8500
+    labels:
+      dc: primary
+      role: server
+- job_name: consul-primary-clients
+  scrape_interval: 15s
+  metrics_path: "/v1/agent/metrics"
+  params:
+    format: ['prometheus']
+  static_configs:
+  - targets:
+    - consul-primary-ui${cluster_id}:8500
+    - consul-client${cluster_id}-primary-1:8500
+    - consul-client${cluster_id}-primary-2:8500
+    - consul-client${cluster_id}-primary-3:8500
+    labels:
+      dc: primary
+      role: client
+
+- job_name: consul-secondary-servers
+  scrape_interval: 15s
+  metrics_path: "/v1/agent/metrics"
+  params:
+    format: ['prometheus']
+  static_configs:
+  - targets:
+    - consul-server${cluster_id}-secondary-0:8500
+    - consul-server${cluster_id}-secondary-1:8500
+    - consul-server${cluster_id}-secondary-2:8500
+    labels:
+      dc: secondary
+      role: server
+- job_name: consul-secondary-clients
+  scrape_interval: 15s
+  metrics_path: "/v1/agent/metrics"
+  params:
+    format: ['prometheus']
+  static_configs:
+  - targets:
+    - consul-secondary-ui${cluster_id}:8500
+    - consul-client${cluster_id}-secondary-1:8500
+    - consul-client${cluster_id}-secondary-2:8500
+    - consul-client${cluster_id}-secondary-3:8500
+    labels:
+      dc: secondary
+      role: client
+
+- job_name: primary-gateway
+  scrape_interval: 15s
+  metrics_path: "/stats/prometheus"
+  static_configs:
+  - targets:
+    - consul-client${cluster_id}-primary-3:19000
+    labels:
+      dc: primary
+      role: mesh-gateway
+
+- job_name: secondary-gateway
+  scrape_interval: 15s
+  metrics_path: "/stats/prometheus"
+  static_configs:
+  - targets:
+    - consul-client${cluster_id}-secondary-3:19000
+    labels:
+      dc: secondary
+      role: mesh-gateway
+
+- job_name: primary-socat-proxy
+  scrape_interval: 15s
+  metrics_path: "/stats/prometheus"
+  static_configs:
+  - targets:
+    - consul-client${cluster_id}-primary-1:19000
+    labels:
+      dc: primary
+      role: sidecar
+
+- job_name: secondary-socat-proxy
+  scrape_interval: 15s
+  metrics_path: "/stats/prometheus"
+  static_configs:
+  - targets:
+    - consul-client${cluster_id}-secondary-1:19000
+    labels:
+      dc: secondary
+      role: sidecar
+
+- job_name: primary-tcpproxy-proxy
+  scrape_interval: 15s
+  metrics_path: "/stats/prometheus"
+  static_configs:
+  - targets:
+    - consul-client${cluster_id}-primary-2:19000
+    labels:
+      dc: primary
+      role: sidecar
+
+- job_name: secondary-tcpproxy-proxy
+  scrape_interval: 15s
+  metrics_path: "/stats/prometheus"
+  static_configs:
+  - targets:
+    - consul-client${cluster_id}-secondary-2:19000
+    labels:
+      dc: secondary
+      role: sidecar

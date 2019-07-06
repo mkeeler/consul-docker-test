@@ -30,29 +30,56 @@ config_entries {
     },
     {
       Kind = "service-defaults"
+      Name = "api-v2"
+      protocol = "http"
+    },
+    {
+      Kind = "service-defaults"
       Name = "web"
       protocol = "http"
     },
     {
       Kind = "service-resolver"
       Name = "api"
+      Subsets {
+        v1 {
+          Filter = "Service.Meta.version == 1"
+        }
+        v2 {
+          Filter = "Service.Meta.version == 2"
+        }
+      }
+    },
+    {
+      Kind = "service-resolver"
+      Name = "api-v2"
       Redirect {
+        Service = "api"
+        ServiceSubset = "v2"
         Datacenter = "secondary"
       }
-    }
-    // {
-    //   Kind = "service-splitter"
-    //   Name = "api"
-    //   Splits = [
-    //     {
-    //       Weight = 90
-    //       ServiceSubset = "v1"
-    //     },
-    //     {
-    //       Weight = 10
-    //       ServiceSubset = "v2"
-    //     },
-    //   ]
-    // },
+      Subsets {
+        v1 {
+          Filter = "Service.Meta.version == 1"
+        }
+        v2 {
+          Filter = "Service.Meta.version == 2"
+        }
+      }
+    },
+    {
+      Kind = "service-splitter"
+      Name = "api"
+      Splits = [
+        {
+          Weight = 90
+          ServiceSubset = "v1"
+        },
+        {
+          Weight = 10
+          Service = "api-v2"
+        },
+      ]
+    },
   ]
 }

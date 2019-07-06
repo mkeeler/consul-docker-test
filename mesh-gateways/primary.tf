@@ -103,6 +103,25 @@ module "primary_clients" {
             }
          }
       },
+      {
+         "networks": [docker_network.consul_primary_network.name],
+         "extra_args": [
+            "-grpc-port=8502",
+            "-bind=0.0.0.0",
+            "-advertise", "{{ GetInterfaceIP \"eth0\" }}",
+         ],
+         "config": {
+            "agent-conf.hcl" = local.agent_conf
+            "api-v2.hcl" = file("${path.module}/consul-config/api-v2.hcl")
+         },
+         "ports": {
+            "envoy-admin": {
+               "internal": 19000,
+               "external": 19004,
+               "protocol": "tcp"
+            }
+         }
+      },
    ]
 }
 
@@ -181,5 +200,21 @@ module "primary-web-proxy" {
    name = "primary-web-proxy${local.cluster_id}"
    consul_manager = module.primary_clients.clients[2].name
    sidecar_for = "web"
+   expose_admin = true
+}
+
+resource "docker_container" "primary-api-v2" {
+   image = "nginxdemos/hello"
+   name = "primary-api-v2${local.cluster_id}"
+   network_mode = "container:${module.primary_clients.clients[4].name}"
+   command = []
+}
+module "primary-api-proxy-v2" {
+   source = "../modules/consul-envoy"
+
+   consul_envoy_image = var.consul_envoy_image
+   name = "primary-api-proxy-v2${local.cluster_id}"
+   consul_manager = module.primary_clients.clients[4].name
+   sidecar_for = "api"
    expose_admin = true
 }

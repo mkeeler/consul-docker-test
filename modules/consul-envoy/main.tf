@@ -27,7 +27,7 @@ locals {
    ports = var.expose_admin && !var.container_network_inject ? [var.admin_host_port] : []
 }
 
-resource "docker_container" "primary-gateway" {
+resource "docker_container" "consul-envoy" {
    image = var.consul_envoy_image
    name = var.name
    hostname = var.container_network_inject ? "" : var.name

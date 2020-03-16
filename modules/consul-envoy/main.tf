@@ -7,7 +7,11 @@ locals {
          ["-register"],
          var.address != "" ? ["-address", var.address]: [],
          var.wan_address != "" ? ["-wan-address", var.wan_address]: [],
-         var.service_name != "" ? ["-service", var.service_name]: []
+         var.service_name != "" ? ["-service", var.service_name]: [],
+         flatten([
+            for name, addr in var.bind_addresses:
+            ["-bind-address", format("%s=%s", name, addr)]
+         ])
       )
    ) : []
    sidecar_args = var.sidecar_for != "" && !var.mesh_gateway ? ["-sidecar-for", var.sidecar_for] : []

@@ -103,4 +103,9 @@ variable "wan_address" {
   description = "The IP address to register as the mesh-gateway services WAN address. Can be a go-sockaddr template"
 }
 
+variable "bind_addresses" {
+  type = map(string)
+  default = {}
+  description = "Bind addresses to use for the mesh-gateway proxy. This will prevent binding to the normal lan/wan addresses"
+}
 

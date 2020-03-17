@@ -69,14 +69,14 @@ docker build -t consul-envoy - < consul-envoy.dockerfile
 | 3000      | Grafana UI                                          |
 | 9090      | Prometheus UI                                       |
 | 19001     | `primary-gateway` admin UI                          |
-| 19002     | `primary-api-proxy` admin UI                        |
-| 19003     | `primary-web-proxy` admin UI                        |
+| 19002     | `primary-web-proxy` admin UI                        |
+| 19003     | `primary-api-proxy` admin UI                        |
 | 19004     | `primary-api-v2-proxy` admin UI                     |
 | 19011     | `secondary-gateway` admin UI                        |
-| 19012     | `secondary-api-proxy` admin UI                      |
-| 19013     | `secondary-web-proxy` admin UI                      |
-| 10001     | External access to the `primary-web` service   |
-| 10002     | External access to the `secondary-web` service |
+| 19012     | `secondary-web-proxy` admin UI                      |
+| 19013     | `secondary-api-v2-proxy` admin UI                   |
+| 10001     | External access to the `primary-web` service        |
+| 10002     | External access to the `secondary-web` service      |
 
 ### Usage
 

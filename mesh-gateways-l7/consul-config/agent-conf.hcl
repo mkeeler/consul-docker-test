@@ -41,6 +41,11 @@ config_entries {
     {
       Kind = "service-resolver"
       Name = "api"
+      Failover = {
+        "*"  = {
+          datacenters = ["primary", "secondary"]
+        }
+      }
       Subsets {
         v1 {
           Filter = "Service.Meta.version == 1"

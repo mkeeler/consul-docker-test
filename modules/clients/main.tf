@@ -1,7 +1,10 @@
 locals {
+   partial_name_dc = var.default_name_include_dc ? "${var.datacenter}-" : ""
+   name_prefix = "${var.default_name_prefix}${local.partial_name_dc}"
+   
    client_names = [
       for index, client in var.clients:
-      lookup(client, "name", "${var.default_name_prefix}${var.datacenter}-${index}")
+      lookup(client, "name", "${local.name_prefix}${index}${var.default_name_suffix}")
    ]
    client_hostnames = [
       for index, client in var.clients:

@@ -28,6 +28,18 @@ variable "default_name_prefix" {
   description = "Default prefix to use for container's name and hostname"
 }
 
+variable "default_name_suffix" {
+  type = string
+  default =""
+  description = "Default suffix to use for container's name and hostname"
+}
+
+variable "default_name_include_dc" {
+  type = bool
+  default = true
+  description = "Whether generated container names and hostnames should include the datacenter"
+}
+
 variable "default_networks" {
   type = list(string)
   default = ["consul-net"]

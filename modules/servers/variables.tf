@@ -62,3 +62,87 @@ variable "env" {
   default=[]
   description = "Environment variables to set for the container"
 }
+
+variable "enable_healthcheck" {
+  type = bool
+  default = false
+  description = "Whether to enable a container health check which will monitor that this server is attached to a datacenter with a leader"
+}
+
+variable "healthcheck_endpoint" {
+  type = string
+  default = "localhost:8500"
+  description = "The local Consul API address that should be used within the container"
+}
+
+variable "tls_enabled" {
+  type = bool
+  default = false
+  description = "Enable setting up TLS for the servers. Requires setting tls_ca_cert and tls_ca_key"
+}
+
+variable "tls_ca_cert" {
+  type = string
+  default = ""
+  description = "CA Certificate PEM"
+}
+
+variable "tls_ca_key" {
+  type = string
+  default = ""
+  description = "CA Private Key"
+}
+
+variable "tls_ca_key_type" {
+  type = string
+  default = "ECDSA"
+  description = "CA private key type"
+}
+
+variable "tls_validity_days" {
+  type = number
+  default = 7
+  description = "Number of days the generated certificates will be valid for"
+}
+
+variable "tls_organization" {
+   type = string
+   default = "HashiCorp Inc."
+   description = "Organization to put in all certificate subjects"
+}
+
+variable "tls_organizational_unit" {
+   type = string
+   default = "Consul Docker Test"
+   description = "Organizational Unit to put in all certificate subjects"
+}
+
+variable "tls_country" {
+   type = string
+   default = "US"
+   description = "Country to put in all certificate subjects"
+}
+
+variable "tls_province" {
+   type = string
+   default = "NC"
+   description = "Province or state to put in all certificate subjects"
+}
+
+variable "tls_locality" {
+   type = string
+   default = "Raliegh"
+   description = "Locality or city to put in all certificate subjects"
+}
+
+variable "tls_street_address" {
+   type = list(string)
+   default = []
+   description = "Street addresses to put in all certificate subjects"
+}
+
+variable "tls_postal_code" {
+   type = string
+   default = ""
+   description = "Postal Code to put in all certificate subjects"
+}

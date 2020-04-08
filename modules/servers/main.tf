@@ -1,4 +1,6 @@
-locals {
+locals {   
+   healthcheck_content = var.enable_healthcheck ? "curl -s -k ${var.healthcheck_endpoint}/v1/status/leader | xargs test -n" : "/bin/true"
+
    partial_name_dc = var.default_name_include_dc ? "${var.datacenter}-" : ""
    name_prefix = "${var.default_name_prefix}${local.partial_name_dc}"
    
@@ -25,10 +27,12 @@ locals {
          var.extra_args
       )
    ]
-
+   
+   cert_config = file("${path.module}/certs.hcl")
+      
    server_uploads = [
       for srv in var.servers:
-      merge(var.default_config, lookup(srv, "config", {}))
+      merge(var.default_config, lookup(srv, "config", {}), var.tls_enabled ? map("certs.hcl", local.cert_config) : {})
    ]
 
    server_ports = [
@@ -44,6 +48,68 @@ locals {
    server_networks = [
       for srv in var.servers:
       lookup(srv, "networks", var.default_networks)
+   ]
+   
+   server_tls_dns_names = [
+      for srv in var.servers:
+      concat(lookup(srv, "tls_dns_names", []), ["server.${var.datacenter}.consul", "localhost"])
+   ]
+}
+
+resource "tls_private_key" "server_keys" {
+   count = var.tls_enabled ? length(var.servers) : 0
+   algorithm = "ECDSA"
+   ecdsa_curve = "P384"
+}
+
+resource "tls_cert_request" "server_cert_reqs" {
+   count = var.tls_enabled ? length(var.servers) : 0
+   key_algorithm   = tls_private_key.server_keys[count.index].algorithm
+   private_key_pem = tls_private_key.server_keys[count.index].private_key_pem
+   
+   dns_names = local.server_tls_dns_names[count.index]
+
+   subject {
+      common_name = "server.${var.datacenter}.consul"
+      organization = var.tls_organization
+      organizational_unit = var.tls_organizational_unit
+      country = var.tls_country
+      province = var.tls_province
+      locality = var.tls_locality
+      street_address = var.tls_street_address
+      postal_code = var.tls_postal_code
+  }
+}
+
+resource "tls_locally_signed_cert" "server_certs" {
+   count = var.tls_enabled ? length(var.servers) : 0
+   cert_request_pem   = tls_cert_request.server_cert_reqs[count.index].cert_request_pem
+   ca_key_algorithm   = var.tls_ca_key_type
+   ca_private_key_pem = var.tls_ca_key
+   ca_cert_pem        = var.tls_ca_cert
+
+   early_renewal_hours = 3
+
+   validity_period_hours = var.tls_validity_days * 24
+
+   allowed_uses = [
+      "key_encipherment",
+      "digital_signature",
+      "client_auth",
+      "server_auth",
+   ]
+   
+   set_subject_key_id = true
+}
+
+locals {
+   server_tls_uploads = [
+      for index, srv in var.servers:
+      var.tls_enabled ? {
+         "cert.pem" = tls_locally_signed_cert.server_certs[index].cert_pem,
+         "key.pem" = tls_private_key.server_keys[index].private_key_pem,
+         "cacert.pem" = var.tls_ca_cert
+      } : {}
    ]
 }
 
@@ -77,6 +143,15 @@ resource "docker_container" "server-containers" {
          file = "/consul/config/${upload.key}"
       }
    }
+   
+   dynamic "upload" {
+      for_each = local.server_tls_uploads[count.index]
+
+      content {
+         content = upload.value
+         file = "/consul/config/tls/${upload.key}"
+      }
+   }
 
    dynamic "volumes" {
       for_each = var.persistent_data ? [docker_volume.server-data[count.index].name] : []
@@ -84,6 +159,7 @@ resource "docker_container" "server-containers" {
       content {
          volume_name = volumes.value
          container_path = "/consul/data/"
+         read_only = false
       }
    }
 
@@ -95,5 +171,16 @@ resource "docker_container" "server-containers" {
          external = contains(keys(ports.value), "external") ? ports.value["external"] : null
          protocol = contains(keys(ports.value), "protocol") ? ports.value["protocol"] : null
       }
+   }
+   
+   upload {
+      file = "/container-health"
+      content = local.healthcheck_content
+      executable = true
+   }
+   
+   healthcheck {
+      test = ["CMD", "/bin/sh", "-c", "/container-health"]
+      interval = "1s"
    }
 }

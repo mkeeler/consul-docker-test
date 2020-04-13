@@ -70,7 +70,7 @@ resource "tls_cert_request" "server_cert_reqs" {
    dns_names = local.server_tls_dns_names[count.index]
 
    subject {
-      common_name = "server.${var.datacenter}.consul"
+      common_name = local.server_hostnames[count.index]
       organization = var.tls_organization
       organizational_unit = var.tls_organizational_unit
       country = var.tls_country

@@ -11,13 +11,13 @@ resource "random_string" "cluster_id" {
 }
 
 locals {
-   cluster_id = random_string.cluster_id.result
+   cluster_id = var.use_cluster_id ? "-${random_string.cluster_id.result}" : ""
    ca_key_pem = file(var.tls_ca_key_file)
    ca_cert_pem = file(var.tls_ca_cert_file)
 }
 
 resource "docker_network" "consul_network" {
-   name = "consul-adoption-day-${local.cluster_id}"
+   name = "consul-secure${local.cluster_id}"
    check_duplicate = "true"
    driver = "bridge"
    options = {
@@ -43,7 +43,7 @@ module "servers" {
       "agent-conf.hcl" = file("agent-conf.hcl")
    }
    default_name_include_dc = false
-   default_name_suffix = "-${local.cluster_id}"
+   default_name_suffix = "${local.cluster_id}"
    enable_healthcheck = true
    
    tls_enabled = true
@@ -85,7 +85,7 @@ module "clients" {
    
    clients = [
       {
-         "name": "consul-ui-${local.cluster_id}",
+         "name": "consul-secure-ui${local.cluster_id}",
          "extra_args": ["-ui"],
          "ports": {
             "http": {

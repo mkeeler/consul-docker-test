@@ -43,8 +43,8 @@ locals {
    ]
    
    client_tls_dns_names = [
-      for client in var.clients:
-      concat(lookup(client, "tls_dns_names", []), ["client.${var.datacenter}.consul", "localhost"])
+      for index, client in var.clients:
+      concat(lookup(client, "tls_dns_names", []), [local.client_hostnames[index], "client.${var.datacenter}.consul", "localhost"])
    ]
 }
 

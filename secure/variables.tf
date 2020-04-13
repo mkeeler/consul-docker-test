@@ -4,6 +4,12 @@ variable "consul_image" {
    description = "Name of the Consul container image to use"
 }
 
+variable "use_cluster_id" {
+   type = bool
+   default = false
+   description = "Whether to append a cluster id to docker resources"
+}
+
 variable "tls_ca_cert_file" {
    type = string
    default = "consul-agent-ca.pem"

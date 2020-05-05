@@ -5,6 +5,16 @@ output "join" {
   ])
 }
 
+output "segment_joins" {
+  value = {
+    for name, segment_config in var.segments:
+    name => formatlist("--retry-join=%s", [
+      for srv in docker_container.server-containers:
+      format("%s:%s", srv.hostname, segment_config["port"])
+    ])
+  }
+}
+
 output "server_hostnames" {
   value = [
     for srv in docker_container.server-containers:

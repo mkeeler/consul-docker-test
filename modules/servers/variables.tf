@@ -146,3 +146,9 @@ variable "tls_postal_code" {
    default = ""
    description = "Postal Code to put in all certificate subjects"
 }
+
+variable "segments" {
+  type = any
+  default = {}
+  description = "Map of segment names to the segment configuration"
+}

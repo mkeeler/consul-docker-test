@@ -1,4 +1,6 @@
 locals {   
+   use_segments = length(var.segments) > 0
+   
    healthcheck_content = var.enable_healthcheck ? "curl -s -k ${var.healthcheck_endpoint}/v1/status/leader | xargs test -n" : "/bin/true"
 
    partial_name_dc = var.default_name_include_dc ? "${var.datacenter}-" : ""
@@ -29,10 +31,20 @@ locals {
    ]
    
    cert_config = file("${path.module}/certs.hcl")
+   
+   segment_list = [
+      for name, segment_config in var.segments:
+      merge({"name": name}, segment_config)
+   ]
+      
+   segment_config = local.use_segments ? templatefile("${path.module}/segment-conf.hcl", map("segments", local.segment_list)) : ""
       
    server_uploads = [
       for srv in var.servers:
-      merge(var.default_config, lookup(srv, "config", {}), var.tls_enabled ? map("certs.hcl", local.cert_config) : {})
+      merge(var.default_config, 
+            lookup(srv, "config", {}), 
+            var.tls_enabled ? map("certs.hcl", local.cert_config) : {},
+            local.use_segments ? map("segment-conf.hcl", local.segment_config): {})
    ]
 
    server_ports = [

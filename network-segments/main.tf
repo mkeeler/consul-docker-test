@@ -54,10 +54,12 @@ module "servers" {
    segments = {
       "seg1": {
          "bind": "{{ GetInterfaceIP \\\"eth1\\\" }}",
+         "advertise": "{{ GetInterfaceIP \\\"eth1\\\" }}",
          "port": 8303,
       },
       "seg2": {
          "bind": "{{ GetInterfaceIP \\\"eth2\\\" }}",
+         "advertise": "{{ GetInterfaceIP \\\"eth2\\\" }}",
          "port": 8304,
       }
    }
@@ -107,7 +109,7 @@ module "seg1_clients" {
    default_image = docker_image.consul.name
    extra_args = concat(module.servers.segment_joins["seg1"], ["-segment", "seg1"])
    default_name_include_dc = false
-   default_name_prefix = "consul-client-seg1"
+   default_name_prefix = "consul-client-seg1-"
    
    clients = [{},{}]
 }
@@ -121,7 +123,7 @@ module "seg2_clients" {
    default_image = docker_image.consul.name
    extra_args = concat(module.servers.segment_joins["seg2"], ["-segment", "seg2"])
    default_name_include_dc = false
-   default_name_prefix = "consul-client-seg2"
+   default_name_prefix = "consul-client-seg2-"
 
    clients = [{},{}]
 }

@@ -5,6 +5,7 @@ translate_wan_addrs = true
 acl {
   enabled = true
   default_policy = "deny"
+  enable_token_replication = true
   tokens {
     master = "df87bdaa-b277-42d5-9b40-98d5d0fba61f"
     agent = "df87bdaa-b277-42d5-9b40-98d5d0fba61f"

@@ -48,14 +48,3 @@
 | --------- | --------------------------------------------------- |
 | 8500      | Consul UI - Primary DC                              |
 | 8501      | Consul UI - Secondary DC                            |
-
-### Setting up the Network Areas
-
-These steps assume that you have set the master token to the CONSUL_HTTP_TOKEN environment variable. These steps can also be run from 
-the host machine instead of from within a container.
-
-1. `consul operator area create -peer-datacenter primary -http-addr localhost:8501`
-2. `consul operator area create -peer-datacenter secondary`
-3. `consul operator area join -peer-datacenter secondary consul-server-secondary-0 consul-server-secondary-1 consul-server-secondary-2`
-
-At this point the network area between the primary and secondary datacenter has been setup.

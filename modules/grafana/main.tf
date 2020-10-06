@@ -36,7 +36,7 @@ resource "docker_volume" "grafana-storage" {
 resource "docker_container" "grafana" {
    image = docker_image.grafana.name
    name = "${var.container_name}${local.unique_postfix}"
-   hostname = "${var.container_name}"
+   hostname = var.container_name
    dynamic "networks_advanced" {
       for_each = var.networks
 

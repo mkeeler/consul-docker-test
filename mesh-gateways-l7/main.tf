@@ -14,7 +14,7 @@ resource "random_string" "cluster_id" {
 locals {
    cluster_id = var.use_cluster_id ? "-${random_string.cluster_id.result}" : ""
 
-   agent_conf = file("${path.module}/consul-config/agent-conf.hcl")
+   agent_conf = templatefile("${path.module}/consul-config/agent-conf.hcl", {"prometheus_address": "prometheus${local.cluster_id}:9090"})
 }
 
 resource "docker_network" "consul_bridge_network" {

@@ -64,6 +64,10 @@ module "secondary_clients" {
             "api-v2.hcl" = file("${path.module}/consul-config/api-v2.hcl")
          }
          "ports": {
+            "http": {
+               "internal": 8500,
+               "protocol": "tcp"
+            },
             "envoy-admin": {
                "internal": 19000,
                "external": 19013,
@@ -79,6 +83,10 @@ module "secondary_clients" {
             "web.hcl" = file("${path.module}/consul-config/web.hcl")
          },
          "ports": {
+            "http": {
+               "internal": 8500,
+               "protocol": "tcp"
+            },
             "web-external": {
                "internal": 10000,
                "external": 10002,
@@ -106,6 +114,10 @@ module "secondary_clients" {
             # "mg.hcl" = file("gateway.hcl")
          },
          "ports": {
+            "http": {
+               "internal": 8500,
+               "protocol": "tcp"
+            },
             "envoy-admin": {
                "internal": 19000,
                "external": 19011,

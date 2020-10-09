@@ -59,11 +59,15 @@ module "primary_clients" {
             "api-v1.hcl" = file("${path.module}/consul-config/api-v1.hcl")
          },
          "ports": {
+            "http": {
+               "internal": 8500,
+               "protocol": "tcp"
+            },
             "envoy-admin": {
                "internal": 19000,
                "external": 19003,
                "protocol": "tcp"
-            }
+            },
          }
       },
       {
@@ -74,6 +78,10 @@ module "primary_clients" {
             "web.hcl" = file("${path.module}/consul-config/web.hcl")
          },
          "ports": {
+            "http": {
+               "internal": 8500,
+               "protocol": "tcp"
+            },
             "web-external": {
                "internal": 10000,
                "external": 10001,
@@ -99,6 +107,10 @@ module "primary_clients" {
             "agent-conf.hcl" = local.agent_conf
          },
          "ports": {
+            "http": {
+               "internal": 8500,
+               "protocol": "tcp"
+            },
             "envoy-admin": {
                "internal": 19000,
                "external": 19001,
@@ -119,6 +131,10 @@ module "primary_clients" {
             "api-v2.hcl" = file("${path.module}/consul-config/api-v2.hcl")
          },
          "ports": {
+            "http": {
+               "internal": 8500,
+               "protocol": "tcp"
+            },
             "envoy-admin": {
                "internal": 19000,
                "external": 19004,

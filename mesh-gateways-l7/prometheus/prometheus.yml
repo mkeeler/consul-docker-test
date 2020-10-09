@@ -20,9 +20,10 @@ scrape_configs:
   static_configs:
   - targets:
     - consul-primary-ui${cluster_id}:8500
-    - consul-client${cluster_id}-primary-1:8500
-    - consul-client${cluster_id}-primary-2:8500
-    - consul-client${cluster_id}-primary-3:8500
+    - consul-primary-api-v1-manager${cluster_id}:8500
+    - consul-primary-web-manager${cluster_id}:8500
+    - consul-primary-gateway-manager${cluster_id}:8500
+    - consul-primary-api-v2-manager${cluster_id}:8500
     labels:
       dc: primary
       role: client
@@ -48,9 +49,9 @@ scrape_configs:
   static_configs:
   - targets:
     - consul-secondary-ui${cluster_id}:8500
-    - consul-client${cluster_id}-secondary-1:8500
-    - consul-client${cluster_id}-secondary-2:8500
-    - consul-client${cluster_id}-secondary-3:8500
+    - consul-secondary-api-v2-manager${cluster_id}:8500
+    - consul-secondary-web-manager${cluster_id}:8500
+    - consul-secondary-gateway-manager${cluster_id}:8500
     labels:
       dc: secondary
       role: client
@@ -60,7 +61,7 @@ scrape_configs:
   metrics_path: "/stats/prometheus"
   static_configs:
   - targets:
-    - consul-client${cluster_id}-primary-3:19000
+    - consul-primary-gateway-manager${cluster_id}:19000
     labels:
       dc: primary
       role: mesh-gateway
@@ -70,47 +71,58 @@ scrape_configs:
   metrics_path: "/stats/prometheus"
   static_configs:
   - targets:
-    - consul-client${cluster_id}-secondary-3:19000
+    - consul-secondary-gateway-manager${cluster_id}:19000
     labels:
       dc: secondary
       role: mesh-gateway
 
-- job_name: primary-socat-proxy
+- job_name: primary-api-proxy
   scrape_interval: 15s
   metrics_path: "/stats/prometheus"
   static_configs:
   - targets:
-    - consul-client${cluster_id}-primary-1:19000
+    - consul-primary-api-v1-manager${cluster_id}:19000
     labels:
       dc: primary
       role: sidecar
 
-- job_name: secondary-socat-proxy
+- job_name: secondary-api-proxy
   scrape_interval: 15s
   metrics_path: "/stats/prometheus"
   static_configs:
   - targets:
-    - consul-client${cluster_id}-secondary-1:19000
+    - consul-secondary-api-v2-manager${cluster_id}:19000
     labels:
       dc: secondary
       role: sidecar
 
-- job_name: primary-tcpproxy-proxy
+- job_name: primary-web-proxy
   scrape_interval: 15s
   metrics_path: "/stats/prometheus"
   static_configs:
   - targets:
-    - consul-client${cluster_id}-primary-2:19000
+    - consul-primary-web-manager${cluster_id}:19000
     labels:
       dc: primary
       role: sidecar
 
-- job_name: secondary-tcpproxy-proxy
+- job_name: secondary-web-proxy
   scrape_interval: 15s
   metrics_path: "/stats/prometheus"
   static_configs:
   - targets:
-    - consul-client${cluster_id}-secondary-2:19000
+    - consul-secondary-web-manager${cluster_id}:19000
     labels:
       dc: secondary
       role: sidecar
+
+- job_name: primary-api-proxy-v2
+  scrape_interval: 15s
+  metrics_path: "/stats/prometheus"
+  static_configs:
+  - targets:
+    - consul-primary-api-v2-manager${cluster_id}:19000
+    labels:
+      dc: primary
+      role: sidecar
+

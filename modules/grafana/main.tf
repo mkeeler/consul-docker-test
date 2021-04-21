@@ -6,7 +6,11 @@ locals {
    unique_postfix = var.unique_id != "" ? "-${var.unique_id}" : ""
 
    env = [
-      for key, value in merge({"GF_SERVER_ROOT_URL"="http://localhost:3000", "GF_AUTH_ANONYMOUS_ENABLED"=true}, var.env):
+      for key, value in merge({
+         "GF_SERVER_ROOT_URL"="http://localhost:3000", 
+         "GF_AUTH_ANONYMOUS_ENABLED"=true,
+         "GF_AUTH_ANONYMOUS_ORG_ROLE"="Editor"
+      }, var.env):
       "${key}=${value}"
    ]
 

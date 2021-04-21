@@ -2,6 +2,8 @@ primary_datacenter = "primary"
 
 translate_wan_addrs = true
 
+log_level = "debug"
+
 acl {
   enabled = true
   default_policy = "deny"
@@ -16,6 +18,7 @@ acl {
 
 telemetry {
   prometheus_retention_time = "168h"
+  disable_hostname = true
 }
 
 connect {

@@ -14,6 +14,9 @@ acl {
   }
 }
 
+telemetry {
+  prometheus_retention_time = "168h"
+}
 
 connect {
   enabled = true

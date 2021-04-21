@@ -1,7 +1,3 @@
-provider "docker" {
-   version = "2.7.0"
-}
-
 resource "docker_network" "consul_primary_network" {
    name = "consul-primary-net"
    check_duplicate = "true"
@@ -148,4 +144,41 @@ module "secondary_clients" {
          }
       },
    ]
+}
+
+module "prometheus" {
+   source = "../modules/prometheus"
+
+   unique_id = ""
+   networks = [
+      docker_network.consul_bridge_network.name,
+      docker_network.consul_primary_network.name,
+      docker_network.consul_secondary_network.name
+   ]
+
+   config = templatefile("${path.module}/prometheus/prometheus.yml", {"cluster_id": ""})
+}
+
+module "grafana" {
+   source = "../modules/grafana"
+
+   unique_id = ""
+   provisioning = [
+      {
+         type = "datasource"
+         name = "datasource.yaml"
+         content =  templatefile("${path.module}/grafana/prometheus-data-source.yaml", {"prometheus_address": "prometheus:9090"})
+      },
+      {
+         type = "dashboard"
+         name = "dashboards.yml"
+         content = file("${path.module}/grafana/dashboards.yml")
+      },
+      {
+         type = "dashboard"
+         name = "raft-performance.json"
+         content = file("${path.module}/grafana/raft-performance.json")
+      }
+   ]
+   networks = [docker_network.consul_bridge_network.name]
 }

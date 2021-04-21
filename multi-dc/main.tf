@@ -1,7 +1,6 @@
 provider "docker" {
    # currently need to build from github.com/mkeeler/terraform-provider-docker
    # and put into ~/.terraform.d/plugins/<platform>/terraform-provider-docker_v2.0.0
-   version = "2.0.0"
    host = "unix:///var/run/docker.sock"
 }
 

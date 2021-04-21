@@ -7,6 +7,8 @@
 * The client agents are LAN joined to their respective servers
 * The 2 datacenters are WAN joined.
 * Connect is enabled
+* Prometheus is scraping all the consul agents.
+* Grafana is running and configured to point at prometheus
 
 ### ACL Tokens
 
@@ -31,16 +33,19 @@
 
 #### Containers
 
-| Container                  | Datacenter  | Purpose              | Networks                                                       |
-| -------------------------- | ----------- | -------------------- | -------------------------------------------------------------- |
-|`consul-server-primary-0`   | `primary`   | Consul Server        | `consul-primary-net`, `consul-wan-net`                         |
-|`consul-server-primary-1`   | `primary`   | Consul Server        | `consul-primary-net`, `consul-wan-net`                         |
-|`consul-server-primary-2`   | `primary`   | Consul Server        | `consul-primary-net`, `consul-wan-net`                         |
-|`consul-primary-ui`         | `primary`   | Consul Client + UI   | `consul-primary-net`                                           |
-|`consul-server-secondary-0` | `secondary` | Consul Server        | `consul-secondary-net`, `consul-wan-net`                       |
-|`consul-server-secondary-1` | `secondary` | Consul Server        | `consul-secondary-net`, `consul-wan-net`                       |
-|`consul-server-secondary-2` | `secondary` | Consul Server        | `consul-secondary-net`, `consul-wan-net`                       |
-|`consul-secondary-ui`       | `secondary` | Consul Client + UI   | `consul-secondary-net`                                         |
+| Container                  | Datacenter  | Purpose                                                  | Networks                                                       |
+| -------------------------- | ----------- | -------------------------------------------------------- | -------------------------------------------------------------- |
+|`consul-server-primary-0`   | `primary`   | Consul Server                                            | `consul-primary-net`, `consul-wan-net`                         |
+|`consul-server-primary-1`   | `primary`   | Consul Server                                            | `consul-primary-net`, `consul-wan-net`                         |
+|`consul-server-primary-2`   | `primary`   | Consul Server                                            | `consul-primary-net`, `consul-wan-net`                         |
+|`consul-primary-ui`         | `primary`   | Consul Client + UI                                       | `consul-primary-net`                                           |
+|`consul-server-secondary-0` | `secondary` | Consul Server                                            | `consul-secondary-net`, `consul-wan-net`                       |
+|`consul-server-secondary-1` | `secondary` | Consul Server                                            | `consul-secondary-net`, `consul-wan-net`                       |
+|`consul-server-secondary-2` | `secondary` | Consul Server                                            | `consul-secondary-net`, `consul-wan-net`                       |
+|`consul-secondary-ui`       | `secondary` | Consul Client + UI                                       | `consul-secondary-net`                                         |
+|`grafana`                   | N/A         | Grafana container for visualizing metrics                | `consul-wan-net`                                               |
+|`prometheus`                | N/A         | Prometheus instance to scrape metrics from everything    | `consul-primary-net`, `consul-secondary-net`, `consul-wan-net` |
+
 
 #### Ports
 
@@ -48,3 +53,5 @@
 | --------- | --------------------------------------------------- |
 | 8500      | Consul UI - Primary DC                              |
 | 8501      | Consul UI - Secondary DC                            |
+| 3000      | Grafana UI                                          |
+| 9090      | Prometheus UI                                       |

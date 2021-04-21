@@ -178,6 +178,11 @@ module "grafana" {
          type = "dashboard"
          name = "raft-performance.json"
          content = file("${path.module}/grafana/raft-performance.json")
+      },
+      {
+         type = "dashboard"
+         name = "replication.json"
+         content = file("${path.module}/grafana/replication.json")
       }
    ]
    networks = [docker_network.consul_bridge_network.name]

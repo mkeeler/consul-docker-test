@@ -1,0 +1,577 @@
+{
+   "annotations": {
+      "list": [
+         {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+         }
+      ]
+   },
+   "editable": true,
+   "gnetId": null,
+   "graphTooltip": 0,
+   "links": [],
+   "panels": [
+      {
+         "datasource": null,
+         "fieldConfig": {
+            "defaults": {
+               "color": {
+                  "mode": "thresholds"
+               },
+               "mappings": [
+                  {
+                     "from": "",
+                     "id": 1,
+                     "text": "Unhealthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "0"
+                  },
+                  {
+                     "from": "",
+                     "id": 2,
+                     "text": "Healthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "1"
+                  }
+               ],
+               "max": 1,
+               "min": 0,
+               "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                     {
+                        "color": "green",
+                        "value": null
+                     },
+                     {
+                        "color": "#EAB839",
+                        "value": 0
+                     },
+                     {
+                        "color": "green",
+                        "value": 1
+                     }
+                  ]
+               }
+            },
+            "overrides": []
+         },
+         "gridPos": {
+            "h": 7,
+            "w": 6,
+            "x": 0,
+            "y": 0
+         },
+         "id": 2,
+         "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+               "calcs": [
+                  "lastNotNull"
+               ],
+               "fields": "",
+               "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+         },
+         "pluginVersion": "7.5.4",
+         "targets": [
+            {
+               "exemplar": true,
+               "expr": "consul_leader_replication_acl_tokens_status",
+               "instant": true,
+               "interval": "",
+               "intervalFactor": 1,
+               "legendFormat": "",
+               "refId": "A"
+            }
+         ],
+         "title": "ACL Token Replication",
+         "transformations": [
+            {
+               "id": "filterByRefId",
+               "options": {}
+            }
+         ],
+         "type": "stat"
+      },
+      {
+         "datasource": null,
+         "fieldConfig": {
+            "defaults": {
+               "color": {
+                  "mode": "thresholds"
+               },
+               "mappings": [
+                  {
+                     "from": "",
+                     "id": 1,
+                     "text": "Unhealthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "0"
+                  },
+                  {
+                     "from": "",
+                     "id": 2,
+                     "text": "Healthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "1"
+                  }
+               ],
+               "max": 1,
+               "min": 0,
+               "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                     {
+                        "color": "green",
+                        "value": null
+                     },
+                     {
+                        "color": "#EAB839",
+                        "value": 0
+                     },
+                     {
+                        "color": "green",
+                        "value": 1
+                     }
+                  ]
+               }
+            },
+            "overrides": []
+         },
+         "gridPos": {
+            "h": 7,
+            "w": 6,
+            "x": 6,
+            "y": 0
+         },
+         "id": 3,
+         "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+               "calcs": [
+                  "lastNotNull"
+               ],
+               "fields": "",
+               "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+         },
+         "pluginVersion": "7.5.4",
+         "targets": [
+            {
+               "exemplar": true,
+               "expr": "consul_leader_replication_acl_roles_status",
+               "instant": true,
+               "interval": "",
+               "intervalFactor": 1,
+               "legendFormat": "",
+               "refId": "A"
+            }
+         ],
+         "title": "ACL Role Replication",
+         "transformations": [
+            {
+               "id": "filterByRefId",
+               "options": {}
+            }
+         ],
+         "type": "stat"
+      },
+      {
+         "datasource": null,
+         "fieldConfig": {
+            "defaults": {
+               "color": {
+                  "mode": "thresholds"
+               },
+               "mappings": [
+                  {
+                     "from": "",
+                     "id": 1,
+                     "text": "Unhealthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "0"
+                  },
+                  {
+                     "from": "",
+                     "id": 2,
+                     "text": "Healthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "1"
+                  }
+               ],
+               "max": 1,
+               "min": 0,
+               "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                     {
+                        "color": "green",
+                        "value": null
+                     },
+                     {
+                        "color": "#EAB839",
+                        "value": 0
+                     },
+                     {
+                        "color": "green",
+                        "value": 1
+                     }
+                  ]
+               }
+            },
+            "overrides": []
+         },
+         "gridPos": {
+            "h": 7,
+            "w": 6,
+            "x": 12,
+            "y": 0
+         },
+         "id": 4,
+         "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+               "calcs": [
+                  "lastNotNull"
+               ],
+               "fields": "",
+               "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+         },
+         "pluginVersion": "7.5.4",
+         "targets": [
+            {
+               "exemplar": true,
+               "expr": "consul_leader_replication_acl_policies_status",
+               "instant": true,
+               "interval": "",
+               "intervalFactor": 1,
+               "legendFormat": "",
+               "refId": "A"
+            }
+         ],
+         "title": "ACL Policies Replication",
+         "transformations": [
+            {
+               "id": "filterByRefId",
+               "options": {}
+            }
+         ],
+         "type": "stat"
+      },
+      {
+         "datasource": null,
+         "fieldConfig": {
+            "defaults": {
+               "color": {
+                  "mode": "thresholds"
+               },
+               "mappings": [
+                  {
+                     "from": "",
+                     "id": 1,
+                     "text": "Unhealthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "0"
+                  },
+                  {
+                     "from": "",
+                     "id": 2,
+                     "text": "Healthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "1"
+                  }
+               ],
+               "max": 1,
+               "min": 0,
+               "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                     {
+                        "color": "green",
+                        "value": null
+                     },
+                     {
+                        "color": "#EAB839",
+                        "value": 0
+                     },
+                     {
+                        "color": "green",
+                        "value": 1
+                     }
+                  ]
+               }
+            },
+            "overrides": []
+         },
+         "gridPos": {
+            "h": 7,
+            "w": 6,
+            "x": 0,
+            "y": 7
+         },
+         "id": 6,
+         "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+               "calcs": [
+                  "lastNotNull"
+               ],
+               "fields": "",
+               "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+         },
+         "pluginVersion": "7.5.4",
+         "targets": [
+            {
+               "exemplar": true,
+               "expr": "consul_leader_replication_federation_state_status",
+               "instant": true,
+               "interval": "",
+               "intervalFactor": 1,
+               "legendFormat": "",
+               "refId": "A"
+            }
+         ],
+         "title": "Federation State Replication",
+         "transformations": [
+            {
+               "id": "filterByRefId",
+               "options": {}
+            }
+         ],
+         "type": "stat"
+      },
+      {
+         "datasource": null,
+         "fieldConfig": {
+            "defaults": {
+               "color": {
+                  "mode": "thresholds"
+               },
+               "mappings": [
+                  {
+                     "from": "",
+                     "id": 1,
+                     "text": "Unhealthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "0"
+                  },
+                  {
+                     "from": "",
+                     "id": 2,
+                     "text": "Healthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "1"
+                  }
+               ],
+               "max": 1,
+               "min": 0,
+               "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                     {
+                        "color": "green",
+                        "value": null
+                     },
+                     {
+                        "color": "#EAB839",
+                        "value": 0
+                     },
+                     {
+                        "color": "green",
+                        "value": 1
+                     }
+                  ]
+               }
+            },
+            "overrides": []
+         },
+         "gridPos": {
+            "h": 7,
+            "w": 6,
+            "x": 6,
+            "y": 7
+         },
+         "id": 5,
+         "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+               "calcs": [
+                  "lastNotNull"
+               ],
+               "fields": "",
+               "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+         },
+         "pluginVersion": "7.5.4",
+         "targets": [
+            {
+               "exemplar": true,
+               "expr": "consul_leader_replication_config_status",
+               "instant": true,
+               "interval": "",
+               "intervalFactor": 1,
+               "legendFormat": "",
+               "refId": "A"
+            }
+         ],
+         "title": "Config Entry Replication",
+         "transformations": [
+            {
+               "id": "filterByRefId",
+               "options": {}
+            }
+         ],
+         "type": "stat"
+      },
+      {
+         "datasource": null,
+         "fieldConfig": {
+            "defaults": {
+               "color": {
+                  "mode": "thresholds"
+               },
+               "mappings": [
+                  {
+                     "from": "",
+                     "id": 1,
+                     "text": "Unhealthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "0"
+                  },
+                  {
+                     "from": "",
+                     "id": 2,
+                     "text": "Healthy",
+                     "to": "",
+                     "type": 1,
+                     "value": "1"
+                  }
+               ],
+               "max": 1,
+               "min": 0,
+               "noValue": "N/A",
+               "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                     {
+                        "color": "yellow",
+                        "value": null
+                     },
+                     {
+                        "color": "#EAB839",
+                        "value": 0
+                     },
+                     {
+                        "color": "green",
+                        "value": 1
+                     }
+                  ]
+               }
+            },
+            "overrides": []
+         },
+         "gridPos": {
+            "h": 7,
+            "w": 6,
+            "x": 12,
+            "y": 7
+         },
+         "id": 7,
+         "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+               "calcs": [
+                  "lastNotNull"
+               ],
+               "fields": "",
+               "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+         },
+         "pluginVersion": "7.5.4",
+         "targets": [
+            {
+               "exemplar": true,
+               "expr": "consul_leader_replication_namespace_status",
+               "instant": true,
+               "interval": "",
+               "intervalFactor": 1,
+               "legendFormat": "",
+               "refId": "A"
+            }
+         ],
+         "title": "Namespace Replication",
+         "transformations": [
+            {
+               "id": "filterByRefId",
+               "options": {}
+            }
+         ],
+         "type": "stat"
+      }
+   ],
+   "schemaVersion": 27,
+   "style": "dark",
+   "tags": [],
+   "templating": {
+      "list": []
+   },
+   "time": {
+      "from": "now-6h",
+      "to": "now"
+   },
+   "timepicker": {},
+   "timezone": "",
+   "title": "Replication",
+   "uid": "FanxUjuGk",
+   "version": 2
+}

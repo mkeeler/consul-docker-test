@@ -450,7 +450,7 @@
          "targets": [
             {
                "exemplar": true,
-               "expr": "consul_leader_replication_config_status",
+               "expr": "consul_leader_replication_config_entries_status",
                "instant": true,
                "interval": "",
                "intervalFactor": 1,
@@ -541,7 +541,7 @@
          "targets": [
             {
                "exemplar": true,
-               "expr": "consul_leader_replication_namespace_status",
+               "expr": "consul_leader_replication_namespaces_status",
                "instant": true,
                "interval": "",
                "intervalFactor": 1,

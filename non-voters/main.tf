@@ -1,10 +1,3 @@
-provider "docker" {
-   # currently need to build from github.com/mkeeler/terraform-provider-docker
-   # and put into ~/.terraform.d/plugins/<platform>/terraform-provider-docker_v2.0.0
-   version = "2.7.0"
-   host = "unix:///var/run/docker.sock"
-}
-
 resource "docker_network" "consul_network" {
    name = "consul-simple-net"
    check_duplicate = "true"

@@ -1,8 +1,3 @@
-provider "docker" {
-   version = "2.7.0"
-   host = "unix:///var/run/docker.sock"
-}
-
 // some randomness so we can create two of these clusters at once if necessary
 resource "random_string" "cluster_id" {
   length = 4

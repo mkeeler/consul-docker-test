@@ -1,7 +1,3 @@
-provider "docker" {
-   version = "2.7.0"
-}
-
 resource "docker_image" "consul" {
    name = "consul-dev"
    keep_locally = true

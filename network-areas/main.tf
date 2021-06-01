@@ -1,8 +1,3 @@
-provider "docker" {
-   version = "2.0.0"
-   host = "unix:///var/run/docker.sock"
-}
-
 resource "docker_network" "consul_primary_network" {
    name = "consul-primary-net"
    check_duplicate = "true"

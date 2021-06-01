@@ -42,6 +42,10 @@ resource "docker_image" "consul" {
    keep_locally = true
 }
 
+module "license" {
+   source = "../modules/license-env"
+}
+
 module "primary_servers" {
    source = "../modules/servers"
 
@@ -51,11 +55,15 @@ module "primary_servers" {
       "agent-conf.hcl" = file("agent-conf.hcl")
    }
    default_networks = [docker_network.consul_primary_network.name, docker_network.consul_bridge_network.name]
-   default_image = docker_image.consul.name
+   default_image = docker_image.consul.latest
    extra_args=["-bind=0.0.0.0",
                "-advertise", "{{ GetInterfaceIP \"eth0\" }}",
                "-advertise-wan", "{{ GetInterfaceIP \"eth1\" }}",
               ]
+
+   env = [
+      "CONSUL_LICENSE=${module.license.license}"
+   ]
 
    # 3 servers all with defaults
    servers = [{},{},{}]
@@ -70,7 +78,7 @@ module "primary_clients" {
       "agent-conf.hcl" = file("agent-conf.hcl")
    }
    default_networks = [docker_network.consul_primary_network.name]
-   default_image = docker_image.consul.name
+   default_image = docker_image.consul.latest
    extra_args = module.primary_servers.join
 
    clients = [
@@ -102,14 +110,17 @@ module "secondary_servers" {
       "agent-conf.hcl" = file("agent-conf.hcl")
    }
    default_networks = [docker_network.consul_secondary_network.name, docker_network.consul_bridge_network.name]
-   default_image = docker_image.consul.name
+   default_image = docker_image.consul.latest
    extra_args =concat(["-bind=0.0.0.0",
                        "-advertise", "{{ GetInterfaceIP \"eth0\" }}",
                        "-advertise-wan", "{{ GetInterfaceIP \"eth1\" }}",
                       ], 
                       module.primary_servers.wan_join)
 
-
+   env = [
+      "CONSUL_LICENSE=${module.license.license}"
+   ]
+   
    # 3 servers all with defaults
    servers = [{},{},{}]
 }
@@ -123,9 +134,13 @@ module "secondary_clients" {
       "agent-conf.hcl" = file("agent-conf.hcl")
    }
    default_networks = [docker_network.consul_secondary_network.name]
-   default_image = docker_image.consul.name
+   default_image = docker_image.consul.latest
    extra_args = module.secondary_servers.join
 
+   env = [
+      "CONSUL_LICENSE=${module.license.license}"
+   ]
+   
    clients = [
       {
          "name" : "consul-secondary-ui"

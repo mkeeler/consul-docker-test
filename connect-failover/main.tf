@@ -1,8 +1,3 @@
-provider "docker" {
-   version = "2.7.0"
-}
-
-
 // some randomness so we can create two of these clusters at once if necessary
 resource "random_string" "cluster_id" {
   length = 4

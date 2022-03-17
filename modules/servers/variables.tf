@@ -152,3 +152,15 @@ variable "segments" {
   default = {}
   description = "Map of segment names to the segment configuration"
 }
+
+variable "bootstrap" {
+  type = bool
+  default = true
+  description = "whether to bootstrap raft"
+}
+
+variable "bootstrap_expect" {
+  type = number
+  default = 0
+  description = "number of servers to require before bootstrapping"
+}

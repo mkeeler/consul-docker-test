@@ -24,7 +24,7 @@ locals {
       
    client_uploads = [
       for client in var.clients:
-      merge(var.default_config, lookup(client, "config", {}), var.tls_enabled ? map("certs.hcl", local.cert_config) : {})
+      merge(var.default_config, lookup(client, "config", {}), var.tls_enabled ? {"certs.hcl": local.cert_config} : {})
    ]
 
    client_ports = [

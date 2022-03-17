@@ -1,1 +1,3 @@
-// currently there are no outputs
+output "container" {
+  value = docker_container.grafana
+}

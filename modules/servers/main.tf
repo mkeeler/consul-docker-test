@@ -77,7 +77,6 @@ resource "tls_private_key" "server_keys" {
 
 resource "tls_cert_request" "server_cert_reqs" {
   count           = var.tls_enabled ? length(var.servers) : 0
-  key_algorithm   = tls_private_key.server_keys[count.index].algorithm
   private_key_pem = tls_private_key.server_keys[count.index].private_key_pem
 
   dns_names = local.server_tls_dns_names[count.index]
@@ -97,7 +96,6 @@ resource "tls_cert_request" "server_cert_reqs" {
 resource "tls_locally_signed_cert" "server_certs" {
   count              = var.tls_enabled ? length(var.servers) : 0
   cert_request_pem   = tls_cert_request.server_cert_reqs[count.index].cert_request_pem
-  ca_key_algorithm   = var.tls_ca_key_type
   ca_private_key_pem = var.tls_ca_key
   ca_cert_pem        = var.tls_ca_cert
 

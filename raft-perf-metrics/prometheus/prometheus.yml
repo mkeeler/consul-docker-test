@@ -1,0 +1,25 @@
+scrape_configs:
+- job_name: consul-servers
+  scrape_interval: 15s
+  metrics_path: "/v1/agent/metrics"
+  params:
+    format: ['prometheus']
+  static_configs:
+  - targets:
+%{ for name in consulServers ~}
+    - ${name}:8500
+%{ endfor ~}
+    labels:
+      role: server
+- job_name: consul-clients
+  scrape_interval: 15s
+  metrics_path: "/v1/agent/metrics"
+  params:
+    format: ['prometheus']
+  static_configs:
+  - targets:
+%{ for name in consulClients ~}
+    - ${name}:8500
+%{ endfor ~}
+    labels:
+      role: client

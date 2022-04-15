@@ -147,6 +147,12 @@ variable "tls_postal_code" {
    description = "Postal Code to put in all certificate subjects"
 }
 
+variable "use_tls_stanza" {
+  type = bool
+  default = false
+  description = "Configure TLS certificates within the 1.12 tls stanza instead of the old forms"
+}
+
 variable "segments" {
   type = any
   default = {}

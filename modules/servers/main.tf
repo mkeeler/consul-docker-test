@@ -31,7 +31,7 @@ locals {
     )
   ]
 
-  cert_config = file("${path.module}/certs.hcl")
+  cert_config = file(var.use_tls_stanza ? "${path.module}/certs1.12.hcl" : "${path.module}/certs.hcl")
 
   segment_list = [
     for name, segment_config in var.segments :
@@ -137,7 +137,7 @@ resource "docker_container" "server-containers" {
   hostname   = local.server_hostnames[count.index]
   command    = local.server_commands[count.index]
   env        = var.env
-
+  
   dynamic "networks_advanced" {
     for_each = local.server_networks[count.index]
 

@@ -1,0 +1,32 @@
+scrape_configs:
+%{ for job in jobs ~}
+- job_name: ${job["name"]}
+  scrape_interval: 15s
+  metrics_path: ${job["path"]}
+%{ if job["bearer_token"] != "" ~}
+  authorization:
+    credentials: ${job["bearer_token"]}
+%{ endif ~}
+%{ if tobool(job["use_tls"]) ~}
+  tls_config:
+    insecure_skip_verify: true
+  scheme: https
+%{ endif ~}
+%{ if length(job["params"]) > 0 ~}
+  params:
+%{ for param, value in job["params"] ~}
+    ${param}: ['${value}']
+%{ endfor ~}
+%{ endif ~}
+  static_configs:
+  - targets:
+%{ for name in job["targets"] ~}
+    - ${name}
+%{ endfor ~}
+%{ if length(lookup(job, "labels", {})) > 0 ~}
+  labels:
+%{ for label, value in job["labels"] ~}
+    ${label}: ['${value}']
+%{ endfor ~}
+%{ endif ~}
+%{ endfor ~}

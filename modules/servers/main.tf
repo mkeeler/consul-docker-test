@@ -69,6 +69,12 @@ locals {
   ]
 }
 
+resource "random_string" "server_group_id" {
+  length  = 8
+  special = false
+  upper   = false
+}
+
 resource "tls_private_key" "server_keys" {
   count       = var.tls_enabled ? length(var.servers) : 0
   algorithm   = "ECDSA"
@@ -137,7 +143,7 @@ resource "docker_container" "server-containers" {
   hostname   = local.server_hostnames[count.index]
   command    = local.server_commands[count.index]
   env        = var.env
-  
+
   dynamic "networks_advanced" {
     for_each = local.server_networks[count.index]
 
@@ -193,5 +199,23 @@ resource "docker_container" "server-containers" {
   healthcheck {
     test     = ["CMD", "/bin/sh", "-c", "/container-health"]
     interval = "1s"
+  }
+
+  labels {
+    label = "consul_cluster_id"
+    value = random_string.server_group_id.result
+  }
+
+  labels {
+    label = "consul_datacenter"
+    value = var.datacenter
+  }
+
+  dynamic "labels" {
+    for_each = var.labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
   }
 }

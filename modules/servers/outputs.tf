@@ -32,3 +32,7 @@ output "wan_join" {
 output "servers" {
   value = docker_container.server-containers
 }
+
+output "cluster_id" {
+  value = random_string.server_group_id.result
+}

@@ -70,6 +70,10 @@ output "beta_hostnames" {
   value = module.clusters[1].server_hostnames
 }
 
+output "enterprise" {
+  value = var.enterprise
+}
+
 output "alpha" {
   sensitive = true
   value = {

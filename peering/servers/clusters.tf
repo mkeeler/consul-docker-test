@@ -1,10 +1,12 @@
 locals {
   clusterNames    = ["alpha", "beta"]
   exposedAPIPorts = [8501, 9501]
+
+  default_image = var.consul_image != "" ? var.consul_image : var.enterprise ? "hashicorp/consul-enterprise:local" : "consul:local"
 }
 
 resource "docker_image" "consul" {
-  name         = var.consul_image
+  name         = local.default_image
   keep_locally = true
 }
 
@@ -46,6 +48,7 @@ module "clusters" {
     "connect.hcl" = file("consul-configs/connect.hcl")
     "gossip.hcl"  = templatefile("consul-configs/gossip.hcl", { "gossip_key" : random_id.gossip_keys[count.index].b64_std })
     "acl.hcl"     = templatefile("consul-configs/acl.hcl", { "management" : random_uuid.management_tokens[count.index].result, "recovery" : random_uuid.recovery_tokens[count.index].result })
+    "peering.hcl" = file("consul-configs/peering.hcl")
   }
 
   env = module.license.license_docker_env

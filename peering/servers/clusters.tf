@@ -43,12 +43,13 @@ module "clusters" {
   default_name_suffix     = local.cluster_id_suffix
   default_name_include_dc = false
   default_config = {
-    "ports.hcl"   = file("consul-configs/ports.hcl")
-    "tls.hcl"     = file("consul-configs/tls.hcl")
-    "connect.hcl" = file("consul-configs/connect.hcl")
-    "gossip.hcl"  = templatefile("consul-configs/gossip.hcl", { "gossip_key" : random_id.gossip_keys[count.index].b64_std })
-    "acl.hcl"     = templatefile("consul-configs/acl.hcl", { "management" : random_uuid.management_tokens[count.index].result, "recovery" : random_uuid.recovery_tokens[count.index].result })
-    "peering.hcl" = file("consul-configs/peering.hcl")
+    "ports.hcl"        = file("consul-configs/ports.hcl")
+    "tls.hcl"          = file("consul-configs/tls.hcl")
+    "connect.hcl"      = file("consul-configs/connect.hcl")
+    "gossip.hcl"       = templatefile("consul-configs/gossip.hcl", { "gossip_key" : random_id.gossip_keys[count.index].b64_std })
+    "acl.hcl"          = templatefile("consul-configs/acl.hcl", { "management" : random_uuid.management_tokens[count.index].result, "recovery" : random_uuid.recovery_tokens[count.index].result })
+    "peering.hcl"      = file("consul-configs/peering.hcl")
+    "auto-encrypt.hcl" = file("consul-configs/auto-encrypt.hcl")
   }
 
   env = module.license.license_docker_env
@@ -61,7 +62,7 @@ module "clusters" {
   labels = {
     "consul" : "server",
     "consul_tf_id" : local.cluster_id_raw,
-    "consul_cluster_num" : format("%d", count.index),
+    "consul_cluster_name" : local.clusterNames[count.index],
   }
 
   # 3 servers all with defaults

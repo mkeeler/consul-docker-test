@@ -109,3 +109,59 @@ output "beta" {
     "api" : "https://localhost:${local.exposedAPIPorts[1]}"
   }
 }
+
+output "consul_image" {
+  value = local.default_image
+}
+
+output "cluster_id" {
+  value = local.cluster_id
+}
+
+output "cluster_id_raw" {
+  value = local.cluster_id_raw
+}
+
+output "cluster_id_suffix" {
+  value = local.cluster_id_suffix
+}
+
+output "network" {
+  value = docker_network.network.name
+}
+
+output "alpha_env" {
+  value = "${path.module}/alpha/env.sh"
+}
+
+output "beta_env" {
+  value = "${path.module}/alpha/env.sh"
+}
+
+resource "local_file" "alphaEnvironment" {
+  filename = "${path.module}/alpha/env.sh"
+  content  = <<-EOT
+  export CONSUL_HTTP_ADDR=https://localhost:${local.exposedAPIPorts[0]}
+  export CONSUL_HTTP_TOKEN=${random_uuid.management_tokens[0].result}
+  export CONSUL_CACERT=${abspath(path.module)}/alpha/cacert.pem
+  EOT
+}
+
+resource "local_file" "alphaCACert" {
+  filename = "${path.module}/alpha/cacert.pem"
+  content  = module.certificate_authorities[0].cert.cert_pem
+}
+
+resource "local_file" "betaEnvironment" {
+  filename = "${path.module}/beta/env.sh"
+  content  = <<-EOT
+  export CONSUL_HTTP_ADDR=https://localhost:${local.exposedAPIPorts[1]}
+  export CONSUL_HTTP_TOKEN=${random_uuid.management_tokens[1].result}
+  export CONSUL_CACERT=${abspath(path.module)}/beta/cacert.pem
+  EOT
+}
+
+resource "local_file" "betaCACert" {
+  filename = "${path.module}/beta/cacert.pem"
+  content  = module.certificate_authorities[1].cert.cert_pem
+}

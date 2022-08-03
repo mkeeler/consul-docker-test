@@ -3,6 +3,6 @@ data "terraform_remote_state" "servers" {
   backend = "local"
 
   config = {
-    path = "../servers"
+    path = "../servers/terraform.tfstate"
   }
 }

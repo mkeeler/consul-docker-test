@@ -5,6 +5,7 @@ tls {
     tls_min_version   = "TLSv1_3"
     verify_incoming   = true
     verify_outgoing   = true
+    ca_file = "/consul/config/tls/ca.pem" 
   }
   https {
     tls_min_version = "TLSv1_2" # terraform consul provider
@@ -12,6 +13,7 @@ tls {
   }
   internal_rpc {
     verify_server_hostname = true
+    verify_outgoing = true
   }
   grpc {
     verify_incoming = false

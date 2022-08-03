@@ -13,10 +13,10 @@ fi
 
 # these may also not be set when running the script outside of Terraform, but they are 'well-known' (aka hard-coded in clusters.tf as locals)
 if [ -z "${FOO_API}" ]; then
-   export FOO_API="http://localhost:8500"
+   export FOO_API="http://localhost:8501"
 fi
 if [ -z "${BAR_API}" ]; then
-   export BAR_API="http://localhost:9500"
+   export BAR_API="http://localhost:9501"
 fi
 
 # this may also not be set but we can determine it from what's running

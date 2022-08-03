@@ -1,6 +1,6 @@
 locals {
 
-  alphaEnterpriseAgents = {
+  alphaEnterpriseGateways = {
     "alpha-foo-gateway" : {
       "name" : "consul-alpha-foo-gateway${local.cluster_id_suffix}"
       "config" : {
@@ -10,7 +10,7 @@ locals {
     }
   }
 
-  betaEnterpriseAgents = {
+  betaEnterpriseGateways = {
     "beta-bar-gateway" : {
       "name" : "consul-beta-bar-gateway${local.cluster_id_suffix}"
       "config" : {
@@ -20,7 +20,7 @@ locals {
     }
   }
 
-  alphaOssAgents = {
+  alphaOssGateways = {
     "alpha-default-gateway" : {
       "name" : "consul-alpha-default-gateway${local.cluster_id_suffix}"
       "config" : {},
@@ -28,7 +28,7 @@ locals {
     }
   }
 
-  betaOssAgents = {
+  betaOssGateways = {
     "beta-default-gateway" : {
       "name" : "consul-beta-default-gateway${local.cluster_id_suffix}"
       "config" : {},
@@ -36,13 +36,16 @@ locals {
     }
   }
 
-  alphaAgents = merge(
-    local.alphaOssAgents,
-  data.terraform_remote_state.servers.outputs.enterprise ? local.alphaEnterpriseAgents : {})
+  alphaGateways = merge(
+    local.alphaOssGateways,
+  data.terraform_remote_state.servers.outputs.enterprise ? local.alphaEnterpriseGateways : {})
 
-  betaAgents = merge(
-    local.betaOssAgents,
-  data.terraform_remote_state.servers.outputs.enterprise ? local.betaEnterpriseAgents : {})
+  betaGateways = merge(
+    local.betaOssGateways,
+  data.terraform_remote_state.servers.outputs.enterprise ? local.betaEnterpriseGateways : {})
+
+  alphaAgents = local.alphaGateways
+  betaAgents  = local.betaGateways
 }
 
 resource "docker_image" "consul" {

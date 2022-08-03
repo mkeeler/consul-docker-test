@@ -1,13 +1,16 @@
 ENTERPRISE?=1
 ifeq ($(ENTERPRISE),1)
-DEFAULT_IMAGE_NAME="hashicorp/consul-enterprise"
+DEFAULT_IMAGE_NAME=hashicorp/consul-enterprise
+ENTERPRISE_ARG=true
 else
-DEFAULT_IMAGE_NAME="consul"
+DEFAULT_IMAGE_NAME=consul
+ENTERPRISE_ARG=false
 endif
 
 CONSUL_IMAGE_NAME?=$(DEFAULT_IMAGE_NAME)
 CONSUL_IMAGE_VERSION?=local
 ENVOY_IMAGE_VERSION?=v1.23-latest
+
 
 .PHONY: init
 init:
@@ -16,7 +19,7 @@ init:
 
 .PHONY: apply
 apply:
-	terraform -chdir=servers apply -auto-approve
+	terraform -chdir=servers apply -var enterprise=$(ENTERPRISE_ARG) -var consul_image=$(CONSUL_IMAGE_NAME):$(CONSUL_IMAGE_VERSION) -auto-approve
 	terraform -chdir=clients apply -auto-approve
 	
 .PHONY: destroy

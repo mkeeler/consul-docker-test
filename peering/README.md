@@ -78,11 +78,15 @@ As we have two distinct clusters (`alpha` and `beta`) you must use different con
 | `consul-alpha-server-2`        | `alpha` | Consul Server                                             | `consul`                                                       |
 | `consul-alpha-default-gateway` | `alpha` | Consul Client that manages the default partitions gateway | `consul`                                                       |
 | `consul-alpha-foo-gateway`     | `alpha` | Consul Client that manages the foo partitions gateway     | `consul`                                                       |
+| `envoy-alpha-default-gateway`  | `alpha` | Mesh Gateway for the default partition                    | `consul`                                                       |
+| `envoy-alpha-foo-gateway`      | `alpha` | Mesh Gateway for the foo partition                        | `consul`                                                       |
 | `consul-beta-server-0`         | `beta`  | Consul Server                                             | `consul`                                                       |
 | `consul-beta-server-1`         | `beta`  | Consul Server                                             | `consul`                                                       |
 | `consul-beta-server-2`         | `beta`  | Consul Server                                             | `consul`                                                       |
 | `consul-beta-default-gateway`  | `beta`  | Consul Client that manages the default partitions gateway | `consul`                                                       |
 | `consul-beta-foo-gateway`      | `beta`  | Consul Client that manages the foo partitions gateway     | `consul`                                                       |
+| `envoy-beta-default-gateway`   | `beta` | Mesh Gateway for the default partition                     | `consul`                                                       |
+| `envoy-beta-bar-gateway`       | `beta` | Mesh Gateway for the bar partition                         | `consul`                                                       |
 
 #### Ports
 

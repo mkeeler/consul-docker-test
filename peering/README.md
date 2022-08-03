@@ -1,3 +1,7 @@
+## Overview
+
+This scenario intends to spin up two clusters with multiple partitions, peer those partitions and enable service mesh communications. We enable TLS, gossip encryption and ACLs.
+
 ## Prerequisites
 
 ### Custom Consul Terraform provider
@@ -48,7 +52,18 @@ make destroy
 make rebuild
 ```
 
-### Infrastructure
+## Usage
+
+### Consul UI
+
+Alpha Cluster: https://localhost:8501
+Beta Cluster: https://localhost:9501
+
+### Consul APIs
+
+As we have two distinct clusters (`alpha` and `beta`) you must use different configurations for connecting to them. Within the `servers` directory there exists a `alpha` and `beta` directories. Within those there is an `env.sh` file. If you source that file in your shell, then the normal consul CLI will work to access each clusters APIs. All we setup in the environment are the token, api addr and the CA certs.
+
+## Infrastructure
 
 #### Networks
 

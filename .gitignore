@@ -10,3 +10,5 @@
 
 # tf plans
 *.plan
+/peering/servers/alpha
+/peering/servers/beta

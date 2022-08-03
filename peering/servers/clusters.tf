@@ -39,7 +39,7 @@ module "clusters" {
   datacenter              = "primary"
   default_networks        = [docker_network.network.name]
   default_image           = docker_image.consul.latest
-  default_name_prefix     = "consul-${local.clusterNames[count.index]}-"
+  default_name_prefix     = "consul-${local.clusterNames[count.index]}-server"
   default_name_suffix     = local.cluster_id_suffix
   default_name_include_dc = false
   default_config = {

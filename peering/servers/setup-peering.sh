@@ -74,4 +74,3 @@ then
       -H "X-Consul-Partition: bar" \
       -d "{\"PeerName\": \"alpha-foo\", \"PeeringToken\": \"${PEERING_TOKEN}\"}"
 fi
-   

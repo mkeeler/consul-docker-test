@@ -160,4 +160,17 @@ resource "docker_container" "client-containers" {
       protocol = contains(keys(ports.value), "protocol") ? ports.value["protocol"] : null
     }
   }
+
+  labels {
+    label = "consul_datacenter"
+    value = var.datacenter
+  }
+
+  dynamic "labels" {
+    for_each = var.labels
+    content {
+      label = labels.key
+      value = labels.value
+    }
+  }
 }

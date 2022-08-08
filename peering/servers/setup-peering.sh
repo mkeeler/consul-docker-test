@@ -2,6 +2,33 @@
 
 set -x
 
+# when the script is being run outside of Terraform, the tokens won't be set so we need to populate them
+# from the Terraform state
+if [ -z "${FOO_TOKEN}" ]; then
+   export FOO_TOKEN="$(terraform state show 'random_uuid.management_tokens[0]' | grep result | awk '{print $3}' | tr -d '\"')"
+fi
+if [ -z "${BAR_TOKEN}" ]; then
+   export BAR_TOKEN="$(terraform state show 'random_uuid.management_tokens[1]' | grep result | awk '{print $3}' | tr -d '\"')"
+fi
+
+# these may also not be set when running the script outside of Terraform, but they are 'well-known' (aka hard-coded in clusters.tf as locals)
+if [ -z "${FOO_API}" ]; then
+   export FOO_API="http://localhost:8501"
+fi
+if [ -z "${BAR_API}" ]; then
+   export BAR_API="http://localhost:9501"
+fi
+
+# this may also not be set but we can determine it from what's running
+if [ -z "${ENTERPRISE}" ]; then
+   if docker exec -it consul-alpha-0 consul version | head -n1 | grep +ent > /dev/null 2>&1 ; then
+      echo "Found Consul Enterprise"
+      export ENTERPRISE=true
+   else
+      echo "Found Consul OSS"
+   fi
+fi
+
 # Peer the default partitions
 PEERING_TOKEN_RESP=$(curl -k -s "${ALPHA_API}/v1/peering/token" \
    -X POST \
@@ -47,4 +74,3 @@ then
       -H "X-Consul-Partition: bar" \
       -d "{\"PeerName\": \"alpha-foo\", \"PeeringToken\": \"${PEERING_TOKEN}\"}"
 fi
-   

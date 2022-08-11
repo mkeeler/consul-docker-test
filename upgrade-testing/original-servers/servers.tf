@@ -29,6 +29,7 @@ module "servers" {
   default_config = {
     "connect.hcl"   = file("../consul-configs/connect.hcl")
     "autopilot.hcl" = file("../consul-configs/autopilot.hcl")
+    "logging.hcl"   = file("../consul-configs/logging.hcl")
   }
 
   env = module.license.license_docker_env

@@ -285,11 +285,8 @@ resource "consul_key_prefix" "kv" {
   path_prefix = each.key
 
   subkeys = {
-    "/test-key-0" : "12345",
-    "/test-key-1" : "23456",
-    "/test-key-2" : "34567",
-    "/test-key-3" : "45678",
-    "/test-key-4" : "56789"
+    for i in range(500) :
+    "/test-key-${i}" => "${i}"
   }
 }
 

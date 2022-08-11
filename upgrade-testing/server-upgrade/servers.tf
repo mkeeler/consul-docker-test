@@ -24,6 +24,7 @@ module "servers" {
   default_config = {
     "connect.hcl"   = file("../consul-configs/connect.hcl")
     "autopilot.hcl" = file("../consul-configs/autopilot.hcl")
+    "logging.hcl"   = file("../consul-configs/logging.hcl")
   }
   extra_args = data.terraform_remote_state.original.outputs.join
   bootstrap  = false

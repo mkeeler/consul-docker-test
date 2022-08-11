@@ -4,3 +4,7 @@ output "partitions" {
     partition if partition != "default"
   ]))
 }
+
+output "namespaces" {
+  value = local.partitionsAndNamespaces
+}

@@ -30,14 +30,14 @@ original-servers:
 	
 .PHONY: provision
 provision:
-	terraform -chdir=provision apply -auto-approve || 1
+	terraform -chdir=provision apply -auto-approve || true
 	
 .PHONY: original-clients
 original-clients:
 	terraform -chdir=original-clients apply -auto-approve
 	
 .PHONY: upgrade
-upgrade: add-upgraded-servers slumber decommision-old-servers add-upgraded-clients
+upgrade: add-upgraded-servers slumber decommission-old-servers add-upgraded-clients
 	
 .PHONY: add-upgraded-servers
 add-upgraded-servers:
@@ -53,10 +53,10 @@ add-upgraded-clients:
 
 .PHONY: destroy
 destroy:
-	terraform -chdir=client-upgrade destroy -auto-approve
-	terraform -chdir=original-clients destroy -auto-approve
-	terraform -chdir=server-upgrade destroy -auto-approve
-	terraform -chdir=original-servers destroy -auto-approve
+	terraform -chdir=client-upgrade destroy -auto-approve || true
+	terraform -chdir=original-clients destroy -auto-approve || true
+	terraform -chdir=server-upgrade destroy -auto-approve || true
+	terraform -chdir=original-servers destroy -auto-approve || true
 	# the servers are gone so we cannot do a normal tf provision
 	# but everything is already removed so just rm the state.
 	rm provision/terraform.tfstate* 

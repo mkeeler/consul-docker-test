@@ -2,7 +2,7 @@ locals {
 
   alphaEnterpriseGateways = {
     "alpha-foo-gateway" : {
-      "name" : "consul-alpha-foo-gateway${local.cluster_id_suffix}"
+      "name" : "consul-alpha-foo-gateway${local.cluster_id.name_suffix}"
       "config" : {
         "partition.hcl" : "partition = \"foo\""
       },
@@ -12,7 +12,7 @@ locals {
 
   betaEnterpriseGateways = {
     "beta-bar-gateway" : {
-      "name" : "consul-beta-bar-gateway${local.cluster_id_suffix}"
+      "name" : "consul-beta-bar-gateway${local.cluster_id.name_suffix}"
       "config" : {
         "partition.hcl" : "partition = \"foo\""
       },
@@ -22,7 +22,7 @@ locals {
 
   alphaOssGateways = {
     "alpha-default-gateway" : {
-      "name" : "consul-alpha-default-gateway${local.cluster_id_suffix}"
+      "name" : "consul-alpha-default-gateway${local.cluster_id.name_suffix}"
       "config" : {},
       "partition" : ""
     }
@@ -30,7 +30,7 @@ locals {
 
   betaOssGateways = {
     "beta-default-gateway" : {
-      "name" : "consul-beta-default-gateway${local.cluster_id_suffix}"
+      "name" : "consul-beta-default-gateway${local.cluster_id.name_suffix}"
       "config" : {},
       "partition" : ""
     }
@@ -48,11 +48,6 @@ locals {
   betaAgents  = local.betaGateways
 }
 
-resource "docker_image" "consul" {
-  name         = data.terraform_remote_state.servers.outputs.consul_image
-  keep_locally = true
-}
-
 module "alpha_clients" {
   source = "../../modules/clients"
 
@@ -62,19 +57,19 @@ module "alpha_clients" {
     "ports.hcl"        = file("consul-configs/ports.hcl")
     "tls.hcl"          = file("consul-configs/tls.hcl")
     "connect.hcl"      = file("consul-configs/connect.hcl")
-    "gossip.hcl"       = templatefile("consul-configs/gossip.hcl", { "gossip_key" : data.terraform_remote_state.servers.outputs.alpha_gossip_key })
+    "gossip.hcl"       = templatefile("consul-configs/gossip.hcl", { "gossip_key" : local.alpha_gossip_key })
     "peering.hcl"      = file("consul-configs/peering.hcl")
     "auto-encrypt.hcl" = file("consul-configs/auto-encrypt.hcl")
     "tls/ca.pem"       = data.terraform_remote_state.servers.outputs.alpha_ca_cert
   }
   default_name_prefix     = "consul-alpha-client"
-  default_name_suffix     = local.cluster_id_suffix
-  default_networks        = [data.terraform_remote_state.servers.outputs.network]
-  default_image           = docker_image.consul.latest
-  extra_args              = data.terraform_remote_state.servers.outputs.alpha_join
+  default_name_suffix     = local.cluster_id.name_suffix
+  default_networks        = [local.network.name]
+  default_image           = local.consul_image.latest
+  extra_args              = local.alpha_join
   default_name_include_dc = false
 
-  env = module.license.license_docker_env
+  env = local.license.license_docker_env
 
   clients = [
     for key, agent in local.alphaAgents :
@@ -96,19 +91,19 @@ module "beta_clients" {
     "ports.hcl"        = file("consul-configs/ports.hcl")
     "tls.hcl"          = file("consul-configs/tls.hcl")
     "connect.hcl"      = file("consul-configs/connect.hcl")
-    "gossip.hcl"       = templatefile("consul-configs/gossip.hcl", { "gossip_key" : data.terraform_remote_state.servers.outputs.beta_gossip_key })
+    "gossip.hcl"       = templatefile("consul-configs/gossip.hcl", { "gossip_key" : local.beta_gossip_key })
     "peering.hcl"      = file("consul-configs/peering.hcl")
     "auto-encrypt.hcl" = file("consul-configs/auto-encrypt.hcl")
-    "tls/ca.pem"       = data.terraform_remote_state.servers.outputs.beta_ca_cert
+    "tls/ca.pem"       = local.beta_ca_cert
   }
   default_name_prefix     = "consul-beta-client"
-  default_name_suffix     = local.cluster_id_suffix
-  default_networks        = [data.terraform_remote_state.servers.outputs.network]
-  default_image           = docker_image.consul.latest
+  default_name_suffix     = local.cluster_id.name_suffix
+  default_networks        = [local.network.name]
+  default_image           = local.consul_image.latest
   default_name_include_dc = false
-  extra_args              = data.terraform_remote_state.servers.outputs.beta_join
+  extra_args              = local.beta_join
 
-  env = module.license.license_docker_env
+  env = local.license.license_docker_env
 
   clients = [
     for key, agent in local.betaAgents :

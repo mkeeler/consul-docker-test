@@ -1,18 +1,16 @@
 terraform {
   required_providers {
     consul = {
-      source  = "terraform.local/hashicorp/consul"
-      version = "2.15.1"
+      source = "terraform.local/hashicorp/consul"
     }
-    random = {
-      source = "hashicorp/random"
-    }
-    docker = {
-      source = "kreuzwerker/docker"
+    
+    kubernetes = {
+      source = "hashicorp/kubernetes"
     }
   }
   required_version = ">= 1.2.0"
 }
+
 
 provider "consul" {
   alias      = "alpha"
@@ -30,3 +28,14 @@ provider "consul" {
   datacenter = "primary"
 }
 
+provider "kubernetes" {
+  alias          = "gamma"
+  config_path    = pathexpand("~/.kube/config")
+  config_context = local.gamma_k8s_context
+}
+
+provider "kubernetes" {
+  alias          = "delta"
+  config_path    = pathexpand("~/.kube/config")
+  config_context = local.delta_k8s_context
+}

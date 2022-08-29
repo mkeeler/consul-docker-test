@@ -138,5 +138,6 @@ variable "tls_postal_code" {
 
 variable "labels" {
   type        = map(string)
+  default     = {}
   description = "Additional labels to add to containers"
 }

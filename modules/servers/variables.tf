@@ -173,5 +173,6 @@ variable "bootstrap_expect" {
 
 variable "labels" {
   type        = map(string)
+  default     = {}
   description = "Additional labels to add to containers"
 }

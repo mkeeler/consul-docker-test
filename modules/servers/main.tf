@@ -6,6 +6,7 @@ locals {
   partial_name_dc = var.default_name_include_dc ? "${var.datacenter}-" : ""
   name_prefix     = "${var.default_name_prefix}${local.partial_name_dc}"
 
+  server_group_name = trim("${local.name_prefix}${var.default_name_suffix}", "-")
   server_names = [
     for index, srv in var.servers :
     lookup(srv, "name", "${local.name_prefix}${index}${var.default_name_suffix}")
@@ -65,7 +66,7 @@ locals {
 
   server_tls_dns_names = [
     for srv in var.servers :
-    concat(lookup(srv, "tls_dns_names", []), ["server.${var.datacenter}.consul", "localhost"])
+    concat(lookup(srv, "tls_dns_names", []), ["server.${var.datacenter}.consul", "localhost", local.server_group_name])
   ]
 }
 
@@ -143,12 +144,14 @@ resource "docker_container" "server-containers" {
   hostname   = local.server_hostnames[count.index]
   command    = local.server_commands[count.index]
   env        = var.env
+  must_run = false
 
   dynamic "networks_advanced" {
     for_each = local.server_networks[count.index]
 
     content {
       name = networks_advanced.value
+      aliases = [local.server_group_name]
     }
   }
 

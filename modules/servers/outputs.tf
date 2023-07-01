@@ -36,3 +36,11 @@ output "servers" {
 output "cluster_id" {
   value = random_string.server_group_id.result
 }
+
+output "server_group_hostname" {
+  value = local.server_group_name
+}
+
+output "port" {
+  value = docker_container.server-containers[0].ports
+}

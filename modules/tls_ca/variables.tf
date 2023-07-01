@@ -72,8 +72,8 @@ variable "disable_default_dns_names" {
 
 variable "root_ca" {
   type = object({
-    private_key_pem = string
-    certificate_pem = string
+    private_key_pem    = string
+    certificate_pem    = string
     certificate_bundle = string
   })
   default     = null
